@@ -11,8 +11,12 @@ screenW = 800
 if __name__ == "__main__":
     sys.exit("Starte Gamemode.py, um das Spiel zu starten")
 
+secDialog = False
+
 
 def gamemodeDialog():
+    global secDialog
+
     global gamemode
     global screenH
     global screenW
@@ -54,35 +58,41 @@ def gamemodeDialog():
             screenWEntry.configure(state=tkinter.NORMAL)
 
     def openSkinDialog():
+        global secDialog
+
         def setSkinPack():
+            global secDialog
+
+            print(selectedSkin.get())
             Values.chosenSkinPacket = selectedSkin.get()
+            secDialog = False
             root2.destroy()
 
-        root2 = tkinter.Tk()
-        root2.geometry("400x250")
-        root2.title("Wähle dein Skin-paket!")
+        if not secDialog:
 
-        selectedSkin = tkinter.StringVar(root2)
+            secDialog = True
 
-        defaultSkinPack = ttk.Radiobutton(root2, text="Default Skin-paket", variable=selectedSkin, value="default")
-        defaultSkinPack.pack(pady=(60, 5))
-        SkinPack2 = ttk.Radiobutton(root2, text="Paket 2", variable=selectedSkin, value="paket2")
-        SkinPack2.pack(pady=5)
-        SkinPack3 = ttk.Radiobutton(root2, text="Paket 3", variable=selectedSkin, value="paket3")
-        SkinPack3.pack(pady=(5, 30))
+            root2 = tkinter.Tk()
+            root2.geometry("400x250")
+            root2.title("Wähle dein Skin-paket!")
 
-        confirmButton = ttk.Button(root2, text="Wählen", command=setSkinPack)
-        confirmButton.pack()
+            selectedSkin = tkinter.StringVar(root2)
 
-        root2.mainloop()
+            defaultSkinPack = ttk.Radiobutton(root2, text="Default Skin-paket", variable=selectedSkin, value="default")
+            defaultSkinPack.pack(pady=(100, 5))
+            selectedSkin.set(Values.chosenSkinPacket)
+            SkinPack2 = ttk.Radiobutton(root2, text="Weihnachts Skin-paket", variable=selectedSkin, value="christmas")
+            SkinPack2.pack(pady=(5, 30))
+
+            confirmButton = ttk.Button(root2, text="Wählen", command=setSkinPack)
+            confirmButton.pack()
+
+            root2.mainloop()
 
     selectedFullscreen = tkinter.IntVar(root)
     selectedOption = tkinter.IntVar(root)
     screenH = tkinter.IntVar(root)
     screenW = tkinter.IntVar(root)
-
-    skinButton = ttk.Button(root, text="Wähle dein Skin-paket", command=openSkinDialog)
-    skinButton.place(relx=0.0, rely=0.0, anchor='nw')
 
     fullscreen = ttk.Checkbutton(root, text="Vollbild", command=setScreen, variable=selectedFullscreen)
     fullscreen.pack(pady=(25, 0))
@@ -102,7 +112,10 @@ def gamemodeDialog():
     bER.pack(pady=5)
 
     close = ttk.Button(root, text="Spielen", command=getValues)
-    close.pack(pady=10)
+    close.pack(pady=10, side="right", padx=(0, 75))
+
+    skinButton = ttk.Button(root, text="Wähle dein Skin-paket", command=openSkinDialog)
+    skinButton.pack(pady=10, side="left", padx=(75, 0))
 
     root.mainloop()
 
