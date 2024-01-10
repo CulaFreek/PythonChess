@@ -4,23 +4,23 @@ chosenPacket = Values.chosenSkinPacket
 dirLocation = Values.dirLocation
 
 dirName = chosenPacket + "Skins/"
-fileName = dirLocation + dirName + chosenPacket
+fileName = dirLocation + dirName
 
 icon = fileName + "Icon.ico"
 
-whiteKing = fileName + "WhiteKing.svg"
-whiteQueen = fileName + "WhiteQueen.svg"
-whiteBishop = fileName + "WhiteBishop.svg"
-whiteKnight = fileName + "WhiteKnight.svg"
-whiteRook = fileName + "WhiteRook.svg"
-whitePawn = fileName + "WhitePawn.svg"
+whiteKing = fileName + "WhiteKing.png"
+whiteQueen = fileName + "WhiteQueen.png"
+whiteBishop = fileName + "WhiteBishop.png"
+whiteKnight = fileName + "WhiteKnight.png"
+whiteRook = fileName + "WhiteRook.png"
+whitePawn = fileName + "WhitePawn.png"
 
-blackKing = fileName + "BlackKing.svg"
-blackQueen = fileName + "BlackQueen.svg"
-blackBishop = fileName + "BlackBishop.svg"
-blackKnight = fileName + "BlackKnight.svg"
-blackRook = fileName + "BlackRook.svg"
-blackPawn = fileName + "BlackPawn.svg"
+blackKing = fileName + "BlackKing.png"
+blackQueen = fileName + "BlackQueen.png"
+blackBishop = fileName + "BlackBishop.png"
+blackKnight = fileName + "BlackKnight.png"
+blackRook = fileName + "BlackRook.png"
+blackPawn = fileName + "BlackPawn.png"
 
 lobbySound = fileName + "LobbySound.mp3"
 hitSound = fileName + "HitSound.mp3"
