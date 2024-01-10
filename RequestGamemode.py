@@ -63,7 +63,6 @@ def gamemodeDialog():
         def setSkinPack():
             global secDialog
 
-            print(selectedSkin.get())
             Values.chosenSkinPacket = selectedSkin.get()
             secDialog = False
             root2.destroy()

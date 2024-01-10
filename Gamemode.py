@@ -16,11 +16,17 @@ if __name__ == "__main__":
     dirLocation = os.path.join(fileDir, files)  # Anfügen des Ordnernamen an das Verzeichnis
 
     Values.dirLocation = dirLocation
-    import Skinpackets as Skin
+
+    chosenPacket = Values.chosenSkinPacket
+    dirLocation = Values.dirLocation
+
+    dirName = chosenPacket + "Skins/"
+    fileName = dirLocation + dirName
+    lobbySound = fileName + "LobbySound.mp3"
 
     pygame.init()
 
-    pygame.mixer.music.load(Skin.lobbySound)
+    pygame.mixer.music.load(lobbySound)
     pygame.mixer.music.play(-1, 0.0)
 
     chosenGamemode, screenH, screenW = RG.gamemodeDialog()
