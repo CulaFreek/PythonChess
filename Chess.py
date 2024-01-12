@@ -170,17 +170,17 @@ def receiveMessages(cSocket):  # Funktion zum Empfangen von Zügen, sowie dem Sp
                 break
 
             if data == b"You Won":  # Nachricht, die Erhalten wird, wenn der Gegner verliert
-                informationDialog("Schachmatt   |   " + yourColor + " gewinnt das Spiel", yourColor + " hat das Spiel gewonnen!")
-                inputAllowed = False
                 pygame.mixer.music.load(Skin.winSound)
                 pygame.mixer.music.play(0, 0.0)
+                informationDialog("Schachmatt   |   " + yourColor + " gewinnt das Spiel", yourColor + " hat das Spiel gewonnen!")
+                inputAllowed = False
                 break
             
             if data == b"Draw":  # Nachricht, die Erhalten wird, wenn es zu einem Unentschieden kommt
-                informationDialog("Patt   |   Niemand gewinnt das Spiel", "Unentschieden")
-                inputAllowed = False
                 pygame.mixer.music.load(Skin.pattSound)
                 pygame.mixer.music.play(0, 0.0)
+                informationDialog("Patt   |   Niemand gewinnt das Spiel", "Unentschieden")
+                inputAllowed = False
                 break
 
             receivedTuple = pickle.loads(data)
@@ -201,22 +201,22 @@ def receiveMessages(cSocket):  # Funktion zum Empfangen von Zügen, sowie dem Sp
                     playerChange()  # Wechseln des Gegners, da für seine Figuren die möglichen Züge ermittelt werden sollen, und seine Figuren die Figuren des aktiven Spielers schlagen könnten
                     inputAllowed = False  # Weiteren Input nach Spielende verhindern
                     cSocket.send("You Won".encode())
-                    informationDialog("Schachmatt   |   " + playerEnemyText + " gewinnt das Spiel", playerEnemyText + " hat das Spiel gewonnen!")
                     pygame.mixer.music.load(Skin.loseSound)
                     pygame.mixer.music.play(0, 0.0)
+                    informationDialog("Schachmatt   |   " + playerEnemyText + " gewinnt das Spiel", playerEnemyText + " hat das Spiel gewonnen!")
                     break
                     
                 if not checkMate and check:
-                    informationDialog("SCHACH", "Du stehst im Schach\nSchütze deinen König!")
                     pygame.mixer.music.load(Skin.checkSound)
                     pygame.mixer.music.play(0, 0.0)
+                    informationDialog("SCHACH", "Du stehst im Schach\nSchütze deinen König!")
                     
                 if stalemate:
                     inputAllowed = False  # Weiteren Input nach Spielende verhindern
                     cSocket.send("Draw".encode())
-                    informationDialog("Patt   |   Niemand gewinnt das Spiel", "Unentschieden")
                     pygame.mixer.music.load(Skin.pattSound)
                     pygame.mixer.music.play(0, 0.0)
+                    informationDialog("Patt   |   Niemand gewinnt das Spiel", "Unentschieden")
                     break
 
     except Exception as e:

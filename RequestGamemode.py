@@ -1,3 +1,4 @@
+import pygame
 import tkinter
 from tkinter import ttk
 import sys
@@ -16,10 +17,21 @@ secDialog = False
 
 def gamemodeDialog():
     global secDialog
-
     global gamemode
     global screenH
     global screenW
+
+    chosenPacket = Values.chosenSkinPacket
+    dirLocation = Values.dirLocation
+
+    dirName = chosenPacket + "Skins/"
+    fileName = dirLocation + dirName
+    lobbySound = fileName + "LobbySound.mp3"
+
+    pygame.init()
+
+    pygame.mixer.music.load(lobbySound)
+    pygame.mixer.music.play(-1, 0.0)
 
     root = tkinter.Tk()
     root.geometry("400x250")
@@ -39,6 +51,10 @@ def gamemodeDialog():
                 screenH = int(screenHEntry.get())
                 screenW = int(screenWEntry.get())
                 root.destroy()
+
+                pygame.mixer.music.stop()
+                pygame.mixer.music.unload()
+
         except ValueError:
             screenH.set(800)
             screenW.set(800)
@@ -62,6 +78,15 @@ def gamemodeDialog():
 
         def setSkinPack():
             global secDialog
+
+            if selectedSkin.get() != Values.chosenSkinPacket:
+                newDirName = selectedSkin.get() + "Skins/"
+                newFileName = dirLocation + newDirName
+                newLobbySound = newFileName + "LobbySound.mp3"
+
+                pygame.mixer.music.stop()
+                pygame.mixer.music.load(newLobbySound)
+                pygame.mixer.music.play(-1, 0.0)
 
             Values.chosenSkinPacket = selectedSkin.get()
             secDialog = False

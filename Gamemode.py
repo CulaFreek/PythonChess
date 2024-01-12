@@ -1,4 +1,3 @@
-import pygame
 import sys
 import webbrowser
 import Values
@@ -17,22 +16,7 @@ if __name__ == "__main__":
 
     Values.dirLocation = dirLocation
 
-    chosenPacket = Values.chosenSkinPacket
-    dirLocation = Values.dirLocation
-
-    dirName = chosenPacket + "Skins/"
-    fileName = dirLocation + dirName
-    lobbySound = fileName + "LobbySound.mp3"
-
-    pygame.init()
-
-    pygame.mixer.music.load(lobbySound)
-    pygame.mixer.music.play(-1, 0.0)
-
     chosenGamemode, screenH, screenW = RG.gamemodeDialog()
-
-    pygame.mixer.music.stop()
-    pygame.mixer.music.unload()
 
     Values.chosenGamemode = chosenGamemode
     Values.screenH = screenH
