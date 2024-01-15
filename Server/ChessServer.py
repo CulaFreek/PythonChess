@@ -4,13 +4,18 @@ import threading
 import random
 import datetime
 
+packs = [b"default", b"christmas"]
 games = {}
 version = Values.version
 
 
-def handleClient(clientSocket):
-    messageTime = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+def messageTime():
+    time = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    messageTimeMessage = "[" + time + "]: "
+    return messageTimeMessage
 
+
+def handleClient(clientSocket):
     try:
         decision = clientSocket.recv(1024).decode()
 
@@ -26,7 +31,7 @@ def handleClient(clientSocket):
             if gameCode not in games:  # Überprüfen, ob das Game bereits existiert oder erstellt werden muss
                 games[gameCode] = [clientSocket]  # Falls das Spiel nicht existiert neues erstellen
                 clientSocket.send("Game {} erstellt \nWarte auf weitere Mitglieder...".format(gameCode).encode())
-                print("[" + messageTime + "]: Game {} erstellt".format(gameCode))
+                print(messageTime() + "Game {} erstellt".format(gameCode))
             else:
                 if len(games[gameCode]) >= 2:  # Bestehendem Game beitreten
                     clientSocket.send("Das Game {} ist voll! Bitte erstelle ein neues Game oder joine einem anderem".format(gameCode).encode())
@@ -52,49 +57,47 @@ def handleClient(clientSocket):
                 if not data:
                     break
                 message = data
-                broadcast(message, games[gameCode])
+                broadcast(message, games[gameCode], clientSocket)
 
     except Exception as e:
-        print("[" + messageTime + "]: Fehler beim Umgang mit Client: {}".format(e))
+        print(messageTime() + "Fehler beim Umgang mit Client: {}".format(e))
     finally:  # Client aus dem Game entfernen, wenn ein Fehler vorliegt
         for code, members in games.items():
             if clientSocket in members:
                 members.remove(clientSocket)
                 if not members:
-                    print("[" + messageTime + "]: Game", code, "geschlossen")
+                    print(messageTime() + "Game " + str(code) + " geschlossen")
                     del games[code]
                 break
         clientSocket.close()
 
 
-def broadcast(message, members):
+def broadcast(message, members, clientSocket):
     for memberSocket in members:  # Sende die Nachricht an alle Mitglieder des Games
-        messageTime = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         try:
-            memberSocket.send(message)
+            if memberSocket == clientSocket and message in packs:
+                pass
+            else:
+                memberSocket.send(message)
         except Exception as e:
-            print("[" + messageTime + "]: Fehler beim übermitteln der Nachricht: {}".format(e))
+            print(messageTime() + "Fehler beim übermitteln der Nachricht: {}".format(e))
 
 
 def startServer():
-    messageTime = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-
     serverSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     serverSocket.bind(('0.0.0.0', 8888))
     serverSocket.listen(787)
 
-    print("[" + messageTime + "]: Server gestartet auf Port 8888...")
+    print(messageTime() + "Server gestartet auf Port 8888...")
 
     try:
         while True:
-            messageTime = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-
             clientSocket, addr = serverSocket.accept()
-            print("[" + messageTime + "]: Verbindung von: {}".format(addr))
+            print(messageTime() + "Verbindung von: {}".format(addr))
             clientHandler = threading.Thread(target=handleClient, args=(clientSocket,))
             clientHandler.start()
     except KeyboardInterrupt:
-        print("[" + messageTime + "]: Server fährt herunter...")
+        print(messageTime() + "Server fährt herunter...")
     finally:
         serverSocket.close()
 

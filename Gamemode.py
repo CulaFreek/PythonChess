@@ -1,12 +1,25 @@
+import Skinpackets as Skin
 import sys
 import webbrowser
 import Values
 import time
 import os
 import socket
+import pygame
 import tkinter
 from tkinter import ttk
 import RequestGamemode as RG
+
+
+def newSound():
+    Skin.updateAll()
+
+    pygame.mixer.music.stop()
+    pygame.mixer.music.unload()
+
+    pygame.mixer.music.load(Skin.lobbySound)
+    pygame.mixer.music.play()
+
                 
 if __name__ == "__main__":
 
@@ -15,8 +28,17 @@ if __name__ == "__main__":
     dirLocation = os.path.join(fileDir, files)  # Anfügen des Ordnernamen an das Verzeichnis
 
     Values.dirLocation = dirLocation
+    Skin.updateAll()
+
+    pygame.init()
+
+    pygame.mixer.music.load(Skin.lobbySound)
+    pygame.mixer.music.play(-1, 0.0)
 
     chosenGamemode, screenH, screenW = RG.gamemodeDialog()
+
+    pygame.mixer.music.stop()
+    pygame.mixer.music.unload()
 
     Values.chosenGamemode = chosenGamemode
     Values.screenH = screenH

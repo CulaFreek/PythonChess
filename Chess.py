@@ -21,7 +21,6 @@ mScreenH = screenH / 800  # Teilen durch 800, da das Schachfeld in einem 800 x 8
 white = (250, 250, 250)
 gray = (198, 198, 198)
 
-
 # Schachfeld
                 #   0           1          2           3          4       5       6        7          8          9     10
 chessField = [  # fieldKey, fieldNumber, figure, figureTexture, leftX, yAbove, centerX, centerY, figureColor, column, row
@@ -41,7 +40,7 @@ selectedField = []
 rochadeFigurePlace = []
 lastPossibleFields = []
 possibleHitFields = []
-schlagenEnPassant = [0, 0, 0]  # [move, sourceField, MoveToField] (move: ZUg in dem der Bauer geschlagen werden könnte)
+schlagenEnPassant = [0, 0, 0]  # [move, sourceField, MoveToField] (move: Zug in dem der Bauer geschlagen werden könnte)
 sEPHit = []
 rochadeAllowed = True
 rochadeMoved = [False, False, False, False, False, False]  # w_king, w_1_rook, w_2_rook, b_king, b_1_rook, b_2_rook | Falls bereits bewegt -> entsprechender Wert == True
@@ -128,7 +127,7 @@ def startClient():  # Funktion zum Starten des Clients / verbinden mit dem Serve
                 clientSocket.send(gameCode.encode())
                 
                 gameCreationSuccess = clientSocket.recv(1024)  # Auf Bestätigung des Servers warten
-                
+
                 playerEnemy = clientSocket.recv(1024).decode()  # Gegner-Farbe empfangen
                 if playerEnemy == "white":
                     yourColor = "Schwarz"
@@ -136,8 +135,8 @@ def startClient():  # Funktion zum Starten des Clients / verbinden mit dem Serve
                 else:
                     yourColor = "Weiss"
                     playerEnemyText = "Schwarz"
-                informationDialog("Spiel Information", gameCreationSuccess.decode() + "\n\n--> Du spielst " + yourColor + " <--")
-                
+                informationDialog("Spiel Information", gameCreationSuccess.decode() + "\n\n--> Du spielst " + yourColor + " <--", "", False, True)
+
                 receiveThread = threading.Thread(target=receiveMessages, args=(clientSocket,))
                 receiveThread.start()  # Nachrichtenempfangs-Thread starten
                     
@@ -158,6 +157,20 @@ def receiveMessages(cSocket):  # Funktion zum Empfangen von Zügen, sowie dem Sp
             data = cSocket.recv(1024)  # Empfangen der Nachricht
             if not data:  # Falls kein Zug gemacht wurde, ist der Inhalt der Nachricht 'None'. Nur nicht 'None'-Nachrichten weiter verarbeiten, sonst Fehlermeldung
                 break
+
+            if data == b"christmas":
+                if playerEnemy == "white":
+                    Skin.updateWhite("christmas")
+                else:
+                    Skin.updateBlack("christmas")
+                continue
+
+            if data == b"default":
+                if playerEnemy == "white":
+                    Skin.updateWhite("default")
+                else:
+                    Skin.updateBlack("default")
+                continue
             
             if data == b"Mitspieler left game":  # Falls der Mitspieler das Spiel verlässt
                 inputAllowed = False
@@ -223,7 +236,7 @@ def receiveMessages(cSocket):  # Funktion zum Empfangen von Zügen, sowie dem Sp
         informationDialog("ERROR", "Fehler beim Erhalten der Nachrichten: {}".format(e))
 
 
-def informationDialog(title, text, inputStr="", returnInputAsBool=False):
+def informationDialog(title, text, inputStr="", returnInputAsBool=False, autoDestroy=False):
     global returnValue
 
     root = tkinter.Tk()
@@ -252,7 +265,10 @@ def informationDialog(title, text, inputStr="", returnInputAsBool=False):
     continueButton = ttk.Button(root, text="Ok", command=closeDialog)
     continueButton.pack(side="bottom")
 
+    if autoDestroy:
+        root.destroy()
     root.mainloop()
+
     if returnInputAsBool:
         if returnValue == "True":
             returnValue = True
@@ -895,6 +911,7 @@ def startGame(bot=False, online=False):
     global gameStart
     global gameExit
     global onlineMode
+    global chessField
     
     onlineMode = online
     
@@ -905,19 +922,36 @@ def startGame(bot=False, online=False):
     else:
         startClient()
 
+    if onlineMode:
+        clientSocket.send(Values.chosenSkinPacket.encode())
+        time.sleep(1)
+
+        # Schachfeld
+                    #   0           1          2           3          4       5       6        7          8          9     10
+    chessField = [  # fieldKey, fieldNumber, figure, figureTexture, leftX, yAbove, centerX, centerY, figureColor, column, row
+        ("8a", 1, "black_1_rook", Skin.blackRook, 0 * mScreenW, 0 * mScreenH, 50 * mScreenW, 50 * mScreenH, "black", 1, 1), ("8b", 2, "black_knight", Skin.blackKnight, 100 * mScreenW, 0 * mScreenH, 150 * mScreenW, 50 * mScreenH, "black", 1, 2), ("8c", 3, "black_bishop", Skin.blackBishop, 200 * mScreenW, 0 * mScreenH, 250 * mScreenW, 50 * mScreenH, "black", 1, 3), ("8d", 4, "black_queen", Skin.blackQueen, 300 * mScreenW, 0 * mScreenH, 350 * mScreenW, 50 * mScreenH, "black", 1, 4), ("8e", 5, "black_king", Skin.blackKing, 400 * mScreenW, 0 * mScreenH, 450 * mScreenW, 50 * mScreenH, "black", 1, 5), ("8f", 6, "black_bishop", Skin.blackBishop, 500 * mScreenW, 0 * mScreenH, 550 * mScreenW, 50 * mScreenH, "black", 1, 6), ("8g", 7, "black_knight", Skin.blackKnight, 600 * mScreenW, 0 * mScreenH, 650 * mScreenW, 50 * mScreenH, "black", 1, 7), ("8h", 8, "black_2_rook", Skin.blackRook, 700 * mScreenW, 0 * mScreenH, 750 * mScreenW, 50 * mScreenH, "black", 1, 8),
+        ("7a", 9, "black_pawn", Skin.blackPawn, 0 * mScreenW, 100 * mScreenH, 50 * mScreenW, 150 * mScreenH, "black", 2, 1), ("7b", 10, "black_pawn", Skin.blackPawn, 100 * mScreenW, 100 * mScreenH, 150 * mScreenW, 150 * mScreenH, "black", 2, 2), ("7c", 11, "black_pawn", Skin.blackPawn, 200 * mScreenW, 100 * mScreenH, 250 * mScreenW, 150 * mScreenH, "black", 2, 3), ("7d", 12, "black_pawn", Skin.blackPawn, 300 * mScreenW, 100 * mScreenH, 350 * mScreenW, 150 * mScreenH, "black", 2, 4), ("7e", 13, "black_pawn", Skin.blackPawn, 400 * mScreenW, 100 * mScreenH, 450 * mScreenW, 150 * mScreenH, "black", 2, 5), ("7f", 14, "black_pawn", Skin.blackPawn, 500 * mScreenW, 100 * mScreenH, 550 * mScreenW, 150 * mScreenH, "black", 2, 6), ("7g", 15, "black_pawn", Skin.blackPawn, 600 * mScreenW, 100 * mScreenH, 650 * mScreenW, 150 * mScreenH, "black", 2, 7), ("7h", 16, "black_pawn", Skin.blackPawn, 700 * mScreenW, 100 * mScreenH, 750 * mScreenW, 150 * mScreenH, "black", 2, 8),
+        ("6a", 17, "", "", 0 * mScreenW, 200 * mScreenH, 50 * mScreenW, 250 * mScreenH, "", 3, 1), ("6b", 18, "", "", 100 * mScreenW, 200 * mScreenH, 150 * mScreenW, 250 * mScreenH, "", 3, 2), ("6c", 19, "", "", 200 * mScreenW, 200 * mScreenH, 250 * mScreenW, 250 * mScreenH, "", 3, 3), ("6d", 20, "", "", 300 * mScreenW, 200 * mScreenH, 350 * mScreenW, 250 * mScreenH, "", 3, 4), ("6e", 21, "", "", 400 * mScreenW, 200 * mScreenH, 450 * mScreenW, 250 * mScreenH, "", 3, 5), ("6f", 22, "", "", 500 * mScreenW, 200 * mScreenH, 550 * mScreenW, 250 * mScreenH, "", 3, 6), ("6g", 23, "", "", 600 * mScreenW, 200 * mScreenH, 650 * mScreenW, 250 * mScreenH, "", 3, 7), ("6h", 24, "", "", 700 * mScreenW, 200 * mScreenH, 750 * mScreenW, 250 * mScreenH, "", 3, 8),
+        ("5a", 25, "", "", 0 * mScreenW, 300 * mScreenH, 50 * mScreenW, 350 * mScreenH, "", 4, 1), ("5b", 26, "", "", 100 * mScreenW, 300 * mScreenH, 150 * mScreenW, 350 * mScreenH, "", 4, 2), ("5c", 27, "", "", 200 * mScreenW, 300 * mScreenH, 250 * mScreenW, 350 * mScreenH, "", 4, 3), ("5d", 28, "", "", 300 * mScreenW, 300 * mScreenH, 350 * mScreenW, 350 * mScreenH, "", 4, 4), ("5e", 29, "", "", 400 * mScreenW, 300 * mScreenH, 450 * mScreenW, 350 * mScreenH, "", 4, 5), ("5f", 30, "", "", 500 * mScreenW, 300 * mScreenH, 550 * mScreenW, 350 * mScreenH, "", 4, 6), ("5g", 31, "", "", 600 * mScreenW, 300 * mScreenH, 650 * mScreenW, 350 * mScreenH, "", 4, 7), ("5h", 32, "", "", 700 * mScreenW, 300 * mScreenH, 750 * mScreenW, 350 * mScreenH, "", 4, 8),
+        ("4a", 33, "", "", 0 * mScreenW, 400 * mScreenH, 50 * mScreenW, 450 * mScreenH, "", 5, 1), ("4b", 34, "", "", 100 * mScreenW, 400 * mScreenH, 150 * mScreenW, 450 * mScreenH, "", 5, 2), ("4c", 35, "", "", 200 * mScreenW, 400 * mScreenH, 250 * mScreenW, 450 * mScreenH, "", 5, 3), ("4d", 36, "", "", 300 * mScreenW, 400 * mScreenH, 350 * mScreenW, 450 * mScreenH, "", 5, 4), ("4e", 37, "", "", 400 * mScreenW, 400 * mScreenH, 450 * mScreenW, 450 * mScreenH, "", 5, 5), ("4f", 38, "", "", 500 * mScreenW, 400 * mScreenH, 550 * mScreenW, 450 * mScreenH, "", 5, 6), ("4g", 39, "", "", 600 * mScreenW, 400 * mScreenH, 650 * mScreenW, 450 * mScreenH, "", 5, 7), ("4h", 40, "", "", 700 * mScreenW, 400 * mScreenH, 750 * mScreenW, 450 * mScreenH, "", 5, 8),
+        ("3a", 41, "", "", 0 * mScreenW, 500 * mScreenH, 50 * mScreenW, 550 * mScreenH, "", 6, 1), ("3b", 42, "", "", 100 * mScreenW, 500 * mScreenH, 150 * mScreenW, 550 * mScreenH, "", 6, 2), ("3c", 43, "", "", 200 * mScreenW, 500 * mScreenH, 250 * mScreenW, 550 * mScreenH, "", 6, 3), ("3d", 44, "", "", 300 * mScreenW, 500 * mScreenH, 350 * mScreenW, 550 * mScreenH, "", 6, 4), ("3e", 45, "", "", 400 * mScreenW, 500 * mScreenH, 450 * mScreenW, 550 * mScreenH, "", 6, 5), ("3f", 46, "", "", 500 * mScreenW, 500 * mScreenH, 550 * mScreenW, 550 * mScreenH, "", 6, 6), ("3g", 47, "", "", 600 * mScreenW, 500 * mScreenH, 650 * mScreenW, 550 * mScreenH, "", 6, 7), ("3h", 48, "", "", 700 * mScreenW, 500 * mScreenH, 750 * mScreenW, 550 * mScreenH, "", 6, 8),
+        ("2a", 49, "white_pawn", Skin.whitePawn, 0 * mScreenW, 600 * mScreenH, 50 * mScreenW, 650 * mScreenH, "white", 7, 1), ("2b", 50, "white_pawn", Skin.whitePawn, 100 * mScreenW, 600 * mScreenH, 150 * mScreenW, 650 * mScreenH, "white", 7, 2), ("2c", 51, "white_pawn", Skin.whitePawn, 200 * mScreenW, 600 * mScreenH, 250 * mScreenW, 650 * mScreenH, "white", 7, 3), ("2d", 52, "white_pawn", Skin.whitePawn, 300 * mScreenW, 600 * mScreenH, 350 * mScreenW, 650 * mScreenH, "white", 7, 4), ("2e", 53, "white_pawn", Skin.whitePawn, 400 * mScreenW, 600 * mScreenH, 450 * mScreenW, 650 * mScreenH, "white", 7, 5), ("2f", 54, "white_pawn", Skin.whitePawn, 500 * mScreenW, 600 * mScreenH, 550 * mScreenW, 650 * mScreenH, "white", 7, 6), ("2g", 55, "white_pawn", Skin.whitePawn, 600 * mScreenW, 600 * mScreenH, 650 * mScreenW, 650 * mScreenH, "white", 7, 7), ("2h", 56, "white_pawn", Skin.whitePawn, 700 * mScreenW, 600 * mScreenH, 750 * mScreenW, 650 * mScreenH, "white", 7, 8),
+        ("1a", 57, "white_1_rook", Skin.whiteRook, 0 * mScreenW, 700 * mScreenH, 50 * mScreenW, 750 * mScreenH, "white", 8, 1), ("1b", 58, "white_knight", Skin.whiteKnight, 100 * mScreenW, 700 * mScreenH, 150 * mScreenW, 750 * mScreenH, "white", 8, 2), ("1c", 59, "white_bishop", Skin.whiteBishop, 200 * mScreenW, 700 * mScreenH, 250 * mScreenW, 750 * mScreenH, "white", 8, 3), ("1d", 60, "white_queen", Skin.whiteQueen, 300 * mScreenW, 700 * mScreenH, 350 * mScreenW, 750 * mScreenH, "white", 8, 4), ("1e", 61, "white_king", Skin.whiteKing, 400 * mScreenW, 700 * mScreenH, 450 * mScreenW, 750 * mScreenH, "white", 8, 5), ("1f", 62, "white_bishop", Skin.whiteBishop, 500 * mScreenW, 700 * mScreenH, 550 * mScreenW, 750 * mScreenH, "white", 8, 6), ("1g", 63, "white_knight", Skin.whiteKnight, 600 * mScreenW, 700 * mScreenH, 650 * mScreenW, 750 * mScreenH, "white", 8, 7), ("1h", 64, "white_2_rook", Skin.whiteRook, 700 * mScreenW, 700 * mScreenH, 750 * mScreenW, 750 * mScreenH, "white", 8, 8)
+    ]
+
     pygame.init()
 
     pygameWindow = pygame.display.set_mode((800 * mScreenW, 800 * mScreenH))  # Feste Fenstergröße, in die das Schachfeld perfekt hinein passt
     icon = pygame.image.load(Skin.icon)
     pygame.display.set_icon(icon)
-    
+
     if not onlineMode:
         pygame.display.set_caption("Python-Schach")
     else:
         pygame.display.set_caption("Python-Online-Schach auf jythonchess.de")
 
     repaint()  # Erstes Zeichnen des Spielfeldes
-    
+
     if bot:
         while showPygameWindow:
             if activePlayer == "white":

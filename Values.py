@@ -1,5 +1,5 @@
-version = "0.0.0.4"
-dirLocation = None
+version = "0.0.0.5"
+dirLocation = ""
 
 chosenGamemode = None
 chosenSkinPacket = "christmas"
