@@ -1,3 +1,4 @@
+import Gamemode
 import tkinter
 from tkinter import ttk
 import sys
@@ -16,7 +17,6 @@ secDialog = False
 
 def gamemodeDialog():
     global secDialog
-
     global gamemode
     global screenH
     global screenW
@@ -39,6 +39,7 @@ def gamemodeDialog():
                 screenH = int(screenHEntry.get())
                 screenW = int(screenWEntry.get())
                 root.destroy()
+
         except ValueError:
             screenH.set(800)
             screenW.set(800)
@@ -63,7 +64,10 @@ def gamemodeDialog():
         def setSkinPack():
             global secDialog
 
-            print(selectedSkin.get())
+            if selectedSkin.get() != Values.chosenSkinPacket:
+                Values.chosenSkinPacket = selectedSkin.get()
+                Gamemode.newSound()
+
             Values.chosenSkinPacket = selectedSkin.get()
             secDialog = False
             root2.destroy()
