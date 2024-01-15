@@ -1,10 +1,6 @@
 import math
-import timeit
 
 import Chess
-import Values
-
-
 
 # piece-square tables für alle figuren die angeben wie gut sie auf den jeweiligen feldern positioniert sind
 pawnTable = {
@@ -74,7 +70,7 @@ kingTable = {
 # (work in progress)
 def evaluate():
     score = 0
-    for field in ODC2.chessField:
+    for field in Chess.chessField:
         # 0             1         2           3         4       5       6        7         8          9     10
         fieldKey, fieldNumber, figure, figureTexture, leftX, yAbove, centerX, centerY, figureColor, column, row = field
         if figureColor == "black":
@@ -145,5 +141,4 @@ def getMove():
     return move
 
 
-#result = timeit.timeit(stmt='evaluate()', globals=globals(), number=Values.iterations) + timeit.timeit(stmt='search(1)', globals=globals(), number=Values.iterations)
-#print(f"Execution time is {result / Values.iterations} seconds")
+
