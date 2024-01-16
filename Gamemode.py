@@ -18,7 +18,7 @@ def newSound():
     pygame.mixer.music.unload()
 
     pygame.mixer.music.load(Skin.lobbySound)
-    pygame.mixer.music.play()
+    pygame.mixer.music.play(-1, 0.0)
 
                 
 if __name__ == "__main__":

@@ -29,6 +29,7 @@ checkSound = fileName + "CheckSound.mp3"
 winSound = fileName + "WinSound.mp3"
 loseSound = fileName + "LoseSound.mp3"
 pattSound = fileName + "PattSound.mp3"
+promoteSound = fileName + "PromoteSound.mp3"
 
 
 def updateAll():
@@ -66,6 +67,7 @@ def updateAll():
     global winSound
     global loseSound
     global pattSound
+    global promoteSound
 
     icon = fileName + "Icon.ico"
 
@@ -90,6 +92,7 @@ def updateAll():
     winSound = fileName + "WinSound.mp3"
     loseSound = fileName + "LoseSound.mp3"
     pattSound = fileName + "PattSound.mp3"
+    promoteSound = fileName + "PromoteSound.mp3"
 
 
 def updateWhite(pack):

@@ -463,6 +463,8 @@ def figureMove(sourceIndex, moveToIndex, automatic=False, illegalMoveTest=False)
     global moves
     global rochadeMoved
     global rochadeFigurePlace
+
+    skipSound = False
     
     lastChessField = [] + chessField  # Für den Durchlauf eine Kopie des Feldes erstellen, um bei einem illegalen Zug alle Figuren leicht zurücksetzen zu können
     lastRochadeMoved = [] + rochadeMoved  # Für den Durchlauf eine Kopie der Liste erstellen, um bei einem illegalen Zug die Liste mit den bewegten Figuren zurücksetzen zu können
@@ -474,7 +476,16 @@ def figureMove(sourceIndex, moveToIndex, automatic=False, illegalMoveTest=False)
     mFieldKey, mFieldNumber, mFigure, mFigureTexture, mLeftX, mYAbove, mCenterX, mCenterY, mFigureColor, mColumn, mRow = moveToField  # Entpacken des move_to_fields
     
     if not automatic and not illegalMoveTest:  # Die folgenden 3 Methoden dürfen nur bei einem Zug und nicht bei einer Zugüberprüfung des Computers aufgerufen werden
-        
+
+        if onlineMode:
+            if not automatic and not illegalMoveTest:
+                if sFigure.endswith("pawn"):
+                    if playerEnemy != activePlayer:
+                        dataToSend = pickle.dumps(sEPHit)
+                        clientSocket.send(dataToSend)
+                    data = clientSocket.recv(1024)
+                    sEPHit = list(pickle.loads(data))
+
         if len(sEPHit) != 0 and sFigure.endswith("pawn"):  # Falls im letzten Zug sich ein Bauer um 2 Felder nach vorne bewegt hat und somit von einem gegnerischen Bauern, der nun neben ihm steht geschlagen werden könnte
             fX, fY, fFieldNumber, fTargetFieldX, fTargetFieldY = sEPHit[0]  # Entpacken des 'schlagen en passant' hit
             if fTargetFieldX == mCenterX and fTargetFieldY == mCenterY:  # Falls das 'schlagen en passant' Feld mit den Koordinaten des Feldes, auf das sich die Figur gerade bewegt übereinstimmen
@@ -484,6 +495,8 @@ def figureMove(sourceIndex, moveToIndex, automatic=False, illegalMoveTest=False)
 
                 pygame.mixer.music.load(Skin.hitEnPassanteSound)
                 pygame.mixer.music.play(0, 0.0)
+
+                skipSound = True
 
             sEPHit = []
         
@@ -536,6 +549,11 @@ def figureMove(sourceIndex, moveToIndex, automatic=False, illegalMoveTest=False)
                     sFigure = sFigureColor + eFigure
                     sFigureTexture = rFigure
 
+                    pygame.mixer.music.load(Skin.promoteSound)
+                    pygame.mixer.music.play()
+
+                    skipSound = True
+
         if sFigure.endswith("king"):  # Deaktivieren der Rochade-Möglichkeit für die entsprechende Figur, falls sich diese bewegt
             if sFigure.startswith("white"):
                 rochadeMoved[0] = True
@@ -563,7 +581,7 @@ def figureMove(sourceIndex, moveToIndex, automatic=False, illegalMoveTest=False)
                     rochadeFigurePlace = list(pickle.loads(data))
 
     if not automatic and not illegalMoveTest:
-        if mFigure != "":
+        if mFigure != "" and not skipSound:
             pygame.mixer.music.load(Skin.hitSound)
             pygame.mixer.music.play(0, 0.0)
     
