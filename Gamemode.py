@@ -49,7 +49,7 @@ if __name__ == "__main__":
 
     start = time.time()
     onlineConnection = False
-    while time.time() - start <= 10 and not onlineConnection and chosenGamemode == 1:
+    while time.time() - start <= 3 and not onlineConnection and chosenGamemode == 1:
         try:  # Falls keine Verbindung mit dem Server zustande kommt: Fehler abfangen, Programm durch Sys-exit beenden mit entsprechender Nachricht
             clientSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             clientSocket.connect(('jythonchess.de', 8888))  # Verbinden mit dem Server, falls möglich

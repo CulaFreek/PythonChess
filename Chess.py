@@ -91,12 +91,12 @@ def figureRepaint():
 
             if not onlineMode:
                 if activePlayer == "black":
-                    a = a - (2 * a) + screenW - image_rect.width
-                    b = b - (2 * b) + screenH - image_rect.height
+                    a = -a + screenW - image_rect.width
+                    b = -b + screenH - image_rect.height
             else:
                 if playerEnemy == "white":
-                    a = a - (2 * a) + screenW - image_rect.width
-                    b = b - (2 * b) + screenH - image_rect.height
+                    a = -a + screenW - image_rect.width
+                    b = -b + screenH - image_rect.height
 
             pygameWindow.blit(image, (a, b))
     pygame.display.update()
@@ -118,13 +118,14 @@ def startClient():  # Funktion zum Starten des Clients / verbinden mit dem Serve
             if openGames is not None:
                 onlineConnection = True
                 
-            if time.time() - gameStart <= 10 and not onlineConnection:
+            if time.time() - gameStart <= 3 and not onlineConnection:
                 sys.exit("Es konnte keine Verbindung zum Server hergestellt werden")  # Mitteilung, dass kein Verbindungsaufbau möglich ist
             else:
                 gameCode = informationDialog("Gib deinen Spielcode ein", "Willkommen! \nBitte gib einen Game-Code ein oder erstelle einen neuen \n" + openGames.decode(), "Gib einen Game-Code ein: ")
                 if gameCode is None:
                     sys.exit("Dialog geschlossen!")
-                clientSocket.send(gameCode.encode())
+                else:
+                    clientSocket.send(gameCode.encode())
                 
                 gameCreationSuccess = clientSocket.recv(1024)  # Auf Bestätigung des Servers warten
 
@@ -360,7 +361,7 @@ def possibleRookMoves():  # Funktion zum Ermitteln aller möglichen Turmzüge
     return possibleMoves, possibleHitFieldsRook  # Zurückgeben aller möglichen Bewegungen für den ausgewählten Turm
 
 
-def possiblesBishopMoves():  # Funktion zum Ermitteln aller möglichen Läufer bewegungen
+def possibleBishopMoves():  # Funktion zum Ermitteln aller möglichen Läufer bewegungen
 
     repaintX, repaintY, rFigure, rFieldNumber, rColumn, rRow = selectedField[0]  # Entpacken des ausgewählten Feldes
     possibleMoves = []
@@ -390,7 +391,7 @@ def possiblesBishopMoves():  # Funktion zum Ermitteln aller möglichen Läufer b
 # Bedient sich an der Läufer- und Turmfunktion, da sich die Dame wie eine Kombination aus beiden bewegt
 def possibleQueenMoves():  # Funktion zum Ermitteln aller möglichen Bewegungen für die Dame
     rook, hitFieldsRook = possibleRookMoves()
-    bishop, hitFieldsBishop = possiblesBishopMoves()
+    bishop, hitFieldsBishop = possibleBishopMoves()
     
     possibleMoves = rook + bishop  # Zusammen führen der möglichen Felder aus beiden Klassen, da sich nicht Turm oder Läufer, sondern Turm und Läufer ist
     possibleHitFieldsQueen = hitFieldsRook + hitFieldsBishop
@@ -511,13 +512,21 @@ def figureMove(sourceIndex, moveToIndex, automatic=False, illegalMoveTest=False)
                 while sFigure == "":
                     if onlineMode:
                         if playerEnemy != activePlayer:
-                            eFigure = int(informationDialog("Bauern ersetzen durch: ", "", "Bauern ersetzen durch '1' Turm, '2' Pferd, '3' Läufer, '4' Dame: "))
+                            try:
+                                eFigure = int(informationDialog("Bauern ersetzen durch: ", "", "Bauern ersetzen durch '1' Turm, '2' Pferd, '3' Läufer, '4' Dame: "))
+                            except TypeError as e:
+                                eFigure = 0
                             clientSocket.send(str(eFigure).encode())
-                        
-                        eFigure = int(clientSocket.recv(1024).decode())    
+                        try:
+                            eFigure = int(clientSocket.recv(1024).decode())
+                        except TypeError as e:
+                            eFigure = 0
                     
                     else:
-                        eFigure = int(informationDialog("Bauern ersetzen durch: ", "", "Bauern ersetzen durch '1' Turm, '2' Pferd, '3' Läufer, '4' Dame: "))  
+                        try:
+                            eFigure = int(informationDialog("Bauern ersetzen durch: ", "", "Bauern ersetzen durch '1' Turm, '2' Pferd, '3' Läufer, '4' Dame: "))
+                        except TypeError as e:
+                            eFigure = 0
                     
                     if eFigure == 1:
                         eFigure = "_rook"
@@ -752,7 +761,7 @@ def checkFigureType(figure):  # Funktion zum Überprüfen, für welche Figur die
     if figure.endswith("rook"):
         lastPossibleFields1, possibleHitFields1 = possibleRookMoves()
     if figure.endswith("bishop"):
-        lastPossibleFields1, possibleHitFields1 = possiblesBishopMoves()
+        lastPossibleFields1, possibleHitFields1 = possibleBishopMoves()
     if figure.endswith("queen"):
         lastPossibleFields1, possibleHitFields1 = possibleQueenMoves()
     if figure.endswith("king"):
@@ -832,15 +841,15 @@ def figureSelect(posX, posY):  # Funktion die auf Aufruf des obigen Maus-callbac
                     selectedField.append(index)  # Speichern des Indexes des ausgewählten Feldes | Wichtig für die move Funktion
                     if not onlineMode:
                         if activePlayer == "black":
-                            fX = centerX - (2 * centerX) + screenW
-                            fY = centerY - (2 * centerY) + screenH
+                            fX = -centerX + screenW
+                            fY = -centerY + screenH
                         else:
                             fX = centerX
                             fY = centerY
                     else:
                         if playerEnemy == "white":
-                            fX = centerX - (2 * centerX) + screenW
-                            fY = centerY - (2 * centerY) + screenH
+                            fX = -centerX + screenW
+                            fY = -centerY + screenH
                         else:
                             fX = centerX
                             fY = centerY
@@ -883,12 +892,12 @@ def figureSelect(posX, posY):  # Funktion die auf Aufruf des obigen Maus-callbac
                         fX, fY, fNumber = f
                         if not onlineMode:
                             if activePlayer == "black":
-                                fX = fX - (2 * fX) + screenW
-                                fY = fY - (2 * fY) + screenH
+                                fX = -fX + screenW
+                                fY = -fY + screenH
                         else:
                             if playerEnemy == "white":
-                                fX = fX - (2 * fX) + screenW
-                                fY = fY - (2 * fY) + screenH
+                                fX = -fX + screenW
+                                fY = -fY + screenH
                         pygame.draw.rect(pygameWindow, (63, 255, 0), (fX - 50 * mScreenW, fY - 50 * mScreenH, 100 * mScreenW, 100 * mScreenH))
 
                     for f in rochadeFigurePlace:  # Färben der Felder für König und Turm bei einer Rochade
@@ -897,24 +906,24 @@ def figureSelect(posX, posY):  # Funktion die auf Aufruf des obigen Maus-callbac
                                 tX, tY, = t
                                 if not onlineMode:
                                     if activePlayer == "black":
-                                        tX = tX - (2 * tX) + screenW
-                                        tY = tY - (2 * tY) + screenH
+                                        tX = -tX + screenW
+                                        tY = -tY + screenH
                                 else:
                                     if playerEnemy == "white":
-                                        tX = tX - (2 * tX) + screenW
-                                        tY = tY - (2 * tY) + screenH
+                                        tX = -tX + screenW
+                                        tY = -tY + screenH
                                 pygame.draw.rect(pygameWindow, (192, 0, 255), (tX - 50 * mScreenW, tY - 50 * mScreenH, 100 * mScreenW, 100 * mScreenH))
 
                     for f in possibleHitFields:
                         fX, fY, fNumber = f
                         if not onlineMode:
                             if activePlayer == "black":
-                                fX = fX - (2 * fX) + screenW
-                                fY = fY - (2 * fY) + screenH
+                                fX = -fX + screenW
+                                fY = -fY + screenH
                         else:
                             if playerEnemy == "white":
-                                fX = fX - (2 * fX) + screenW
-                                fY = fY - (2 * fY) + screenH
+                                fX = -fX + screenW
+                                fY = -fY + screenH
                         pygame.draw.rect(pygameWindow, (250, 0, 0), (fX - 50 * mScreenW, fY - 50 * mScreenH, 100 * mScreenW, 100 * mScreenH))
 
                     figureRepaint()
@@ -988,8 +997,8 @@ def startGame(bot=False, online=False):
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     x, y = event.pos
                     if activePlayer == "black" or playerEnemy == "white":
-                        x = x - (2 * x) + screenW
-                        y = y - (2 * y) + screenH
+                        x = -x + screenW
+                        y = -y + screenH
                     figureSelect(x, y)
                 if event.type == pygame.QUIT:
                     if not onlineMode:

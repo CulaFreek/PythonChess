@@ -1,5 +1,3 @@
-import math
-
 import Chess
 
 # piece-square tables für alle figuren die angeben wie gut sie auf den jeweiligen feldern positioniert sind
@@ -64,10 +62,12 @@ kingTable = {
     8: 20, 7: 30, 6: 10, 5: 0, 4: 0, 3: 10, 2: 30, 1: 20
 }
 
-#Funktion, die das aktuelle Board bewertet und einen Score anhand folgender Kriterien zurueckgibt:
+# Funktion, die das aktuelle Board bewertet und einen Score anhand folgender Kriterien zurückgibt:
 # 1. Pure Materialkosten,
 # 2. Position des Materials,
 # (work in progress)
+
+
 def evaluate():
     score = 0
     for field in Chess.chessField:
@@ -101,35 +101,43 @@ def evaluate():
             elif figure.endswith("king"):
                 score -= 20000
     return score
-#funktion, die den besten möglichen zug (aktuell noch tiefe 1) zurueckgibt
+# Funktion, die den besten möglichen zug (aktuell noch tiefe 1) zurückgibt
+
+
 def search(depth):
     if depth == 0:
         return evaluate()
 
     moves = getMoves()
     if moves.length == 0:
-        #if checkCheck():
+        # if checkCheck():
         #    return -math.inf
         return 0
 
     bestValue = -2000000
 
-    #durch alle möglichen zuege loopen und evaluaten wie gut der move ist
+    # durch alle möglichen Züge loopen und evaluaten wie gut der move ist
     for move in moves:
-        #TODO: move temporär machen und das resultierende board evaluaten, vllt nur veränderung eval für schnelleren code (check promote true/false)
-        makemove(move)
+        # TODO: move temporär machen und das resultierende board evaluaten, vielleicht nur veränderung eval für schnelleren code (check promote true/false)
+        makeMove(move)
         value = -search(depth - 1)
         bestValue = max(value, bestValue)
-        unmakemove(move)
+        unmakeMove(move)
 
     return bestValue
 
-def makemove(move):
+
+def makeMove(move):
     return move
-def unmakemove(move):
+
+
+def unmakeMove(move):
     return move
+
+
 def getMoves():
     print("DEBUG")
+
 
 def getMove():
     Chess.selectedField = []
@@ -139,6 +147,3 @@ def getMove():
     move = Chess.possiblePawnMoves()
     print(move)
     return move
-
-
-
