@@ -4,6 +4,7 @@ from tkinter import ttk
 import sys
 
 import Values
+import accountActions
 
 gamemode = None
 screenH = 800
@@ -13,6 +14,7 @@ if __name__ == "__main__":
     sys.exit("Starte Gamemode.py, um das Spiel zu starten")
 
 secDialog = False
+accAction = None
 
 
 def gamemodeDialog():
@@ -93,10 +95,102 @@ def gamemodeDialog():
 
             root2.mainloop()
 
+    def openAccountDialog():
+        global secDialog
+        global accAction
+
+        accAction = None
+
+        def enterPassword():
+            def registerUser():
+                global secDialog
+
+                if accountName.get() != "" and accountPassword.get() != "" and len(accountName.get()) >= 4 and len(accountPassword.get()) >= 4:
+                    success = accountActions.register(accountName.get(), accountPassword.get())
+                    if success is not None:
+                        accountMessage.set(success)
+                        secDialog = False
+                        root3.destroy()
+                    else:
+                        accountName.delete(0, "end")
+                        accountName.insert(0, "Server nicht erreichbar")
+                        accountPassword.delete(0, "end")
+
+            def logInUser():
+                global secDialog
+
+                if accountName.get() != "" and accountPassword.get() != "":
+                    success = accountActions.logIn(accountName.get(), accountPassword.get())
+                    if success is not None:
+                        accountMessage.set(success)
+                        secDialog = False
+                        root3.destroy()
+                    else:
+                        accountName.delete(0, "end")
+                        accountName.insert(0, "Server nicht erreichbar")
+                        accountPassword.delete(0, "end")
+
+            root3 = tkinter.Tk()
+            root3.geometry("400x250")
+            root3.title("Logge dich in deinen Account ein!")
+
+            Label1 = ttk.Label(root3, text="Gib deinen Account-Namen ein:")
+            Label1.pack()
+            accountName = ttk.Entry(root3)
+            accountName.pack(pady=(10, 50))
+            Label2 = ttk.Label(root3, text="Gib deinen Account-Passwort ein:")
+            Label2.pack()
+            accountPassword = ttk.Entry(root3, show="*")
+            accountPassword.pack(pady=(10, 50))
+
+            if accAction == "Register":
+                confirmButton = ttk.Button(root3, text="Registrieren", command=registerUser)
+                confirmButton.pack()
+            elif accAction == "logIn":
+                confirmButton = ttk.Button(root3, text="Einloggen", command=logInUser)
+                confirmButton.pack()
+
+            root3.mainloop()
+
+        def setReg():
+            global accAction
+
+            accAction = "Register"
+            loginOrRegister.destroy()
+            enterPassword()
+
+        def setLog():
+            global accAction
+
+            accAction = "logIn"
+            loginOrRegister.destroy()
+            enterPassword()
+
+        if not secDialog:
+            secDialog = True
+
+            loginOrRegister = tkinter.Tk()
+            loginOrRegister.title("Anmelden oder Registrieren?")
+
+            register = ttk.Button(loginOrRegister, text="Registrieren", command=setReg)
+            register.pack(side="left")
+
+            logIn = ttk.Button(loginOrRegister, text="Einloggen", command=setLog)
+            logIn.pack(side="right")
+
+            loginOrRegister.mainloop()
+
     selectedFullscreen = tkinter.IntVar(root)
     selectedOption = tkinter.IntVar(root)
     screenH = tkinter.IntVar(root)
     screenW = tkinter.IntVar(root)
+
+    accountMessage = tkinter.StringVar(root)
+
+    accountOptions = ttk.Button(root, text="Account", command=openAccountDialog)
+    accountOptions.place(x=0, y=0, anchor="nw")
+    accountMessageLabel = ttk.Label(root, textvariable=accountMessage)
+    accountMessageLabel.place(x=80, y=2, anchor="nw")
 
     fullscreen = ttk.Checkbutton(root, text="Vollbild", command=setScreen, variable=selectedFullscreen)
     fullscreen.pack(pady=(25, 0))

@@ -1,4 +1,7 @@
 import Values
+import userActions as user
+
+import pickle
 import socket
 import threading
 import random
@@ -22,6 +25,20 @@ def handleClient(clientSocket):
         if decision == "versionsabfrage":
             clientSocket.send(version.encode())
             clientSocket.close()
+
+        elif decision == "manageAccount":
+            data = clientSocket.recv(1024)
+            action, *payload = pickle.loads(data)
+
+            if action == "REGISTER":
+                userName, password = payload
+                response = user.register(userName, password)
+                clientSocket.send(response.encode())
+
+            elif action == "LOGIN":
+                userName, password = payload
+                response = user.login(userName, password)
+                clientSocket.send(response.encode())
 
         elif decision == "spielen":
             openGames = ', '.join(games.keys()) or "Keine offenen Games"  # Liste der offenen Game-rooms an den Client senden

@@ -8,7 +8,7 @@ import socket
 import pygame
 import tkinter
 from tkinter import ttk
-import RequestGamemode as RG
+import Settings
 
 
 def newSound():
@@ -35,7 +35,7 @@ if __name__ == "__main__":
     pygame.mixer.music.load(Skin.lobbySound)
     pygame.mixer.music.play(-1, 0.0)
 
-    chosenGamemode, screenH, screenW = RG.gamemodeDialog()
+    chosenGamemode, screenH, screenW = Settings.gamemodeDialog()
 
     pygame.mixer.music.stop()
     pygame.mixer.music.unload()
