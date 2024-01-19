@@ -34,11 +34,13 @@ def handleClient(clientSocket):
                 userName, password = payload
                 response = user.register(userName, password)
                 clientSocket.send(response.encode())
+                clientSocket.close()
 
             elif action == "LOGIN":
                 userName, password = payload
                 response = user.login(userName, password)
                 clientSocket.send(response.encode())
+                clientSocket.close()
 
         elif decision == "spielen":
             openGames = ', '.join(games.keys()) or "Keine offenen Games"  # Liste der offenen Game-rooms an den Client senden
