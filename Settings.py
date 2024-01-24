@@ -1,10 +1,14 @@
 import Gamemode
+
+import pickle
 import tkinter
 from tkinter import ttk
 import sys
 
 import Values
 import accountActions
+
+ACC_FILE = 'files/acc_data.txt'
 
 gamemode = None
 screenH = 800
@@ -15,6 +19,19 @@ if __name__ == "__main__":
 
 secDialog = False
 accAction = None
+
+
+def load_user_data():
+    try:
+        with open(ACC_FILE, 'rb') as file:
+            return pickle.load(file)
+    except FileNotFoundError:
+        return {}
+
+
+def save_user_data(users):
+    with open(ACC_FILE, 'wb') as file:
+        pickle.dump(users, file)
 
 
 def gamemodeDialog():
@@ -108,6 +125,8 @@ def gamemodeDialog():
                 if accountName.get() != "" and accountPassword.get() != "" and len(accountName.get()) >= 4 and len(accountPassword.get()) >= 4:
                     success = accountActions.register(accountName.get(), accountPassword.get())
                     if success is not None:
+                        save_user_data(accountName.get())
+
                         accountMessage.set(success)
                         secDialog = False
                         root3.destroy()
@@ -122,6 +141,8 @@ def gamemodeDialog():
                 if accountName.get() != "" and accountPassword.get() != "":
                     success = accountActions.logIn(accountName.get(), accountPassword.get())
                     if success is not None:
+                        save_user_data(accountName.get())
+
                         accountMessage.set(success)
                         secDialog = False
                         root3.destroy()
@@ -186,6 +207,10 @@ def gamemodeDialog():
     screenW = tkinter.IntVar(root)
 
     accountMessage = tkinter.StringVar(root)
+
+    user = load_user_data()
+    if str(user) != "{}":
+        accountMessage.set("Eingeloggt als " + str(user))
 
     accountOptions = ttk.Button(root, text="Account", command=openAccountDialog)
     accountOptions.place(x=0, y=0, anchor="nw")
