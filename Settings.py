@@ -1,18 +1,17 @@
 import Gamemode
+import Values
+import accountActions
 
 import pickle
 import tkinter
 from tkinter import ttk
 import sys
 
-import Values
-import accountActions
-
 ACC_FILE = 'files/acc_data.txt'
 
 gamemode = None
-screenH = 800
-screenW = 800
+screenH = 1000
+screenW = 1000
 
 if __name__ == "__main__":
     sys.exit("Starte Gamemode.py, um das Spiel zu starten")
@@ -53,15 +52,15 @@ def gamemodeDialog():
         global screenW
 
         try:
-            if 400 <= int(screenHEntry.get()) <= screenHMax and 400 <= int(screenWEntry.get()) <= screenWMax:
+            if 500 <= int(screenHEntry.get()) <= screenHMax and 500 <= int(screenWEntry.get()) <= screenWMax:
                 gamemode = int(selectedOption.get())
                 screenH = int(screenHEntry.get())
                 screenW = int(screenWEntry.get())
                 root.destroy()
 
         except ValueError:
-            screenH.set(800)
-            screenW.set(800)
+            screenH.set(1000)
+            screenW.set(1000)
 
     def setScreen():
         global screenH
@@ -222,10 +221,10 @@ def gamemodeDialog():
 
     screenHEntry = ttk.Entry(root, textvariable=screenH)
     screenHEntry.pack()
-    screenH.set(800)
+    screenH.set(1000)
     screenWEntry = ttk.Entry(root, textvariable=screenW)
     screenWEntry.pack(pady=(0, 10))
-    screenW.set(800)
+    screenW.set(1000)
 
     oDR = ttk.Radiobutton(root, text="Spiele mit einem Freund auf diesem Gerät", variable=selectedOption, value=0)
     oDR.pack(pady=(20, 5))

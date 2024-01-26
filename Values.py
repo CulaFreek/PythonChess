@@ -4,7 +4,7 @@ dirLocation = ""
 chosenGamemode = None
 chosenSkinPacket = "default"
 
-screenW = 800
-screenH = 800
+screenW = 1000
+screenH = 1000
 
 iterations = 1
