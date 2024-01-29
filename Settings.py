@@ -31,7 +31,7 @@ def load_user_data():
 def save_user_data(users):
     with open(ACC_FILE, 'wb') as file:
         pickle.dump(users, file)
-
+    
 
 def gamemodeDialog():
     global secDialog
@@ -77,6 +77,12 @@ def gamemodeDialog():
             screenWEntry.configure(state=tkinter.NORMAL)
 
     def openSkinDialog():
+        def destroyRoot2():
+            global secDialog
+        
+            secDialog = False
+            root2.destroy()
+                
         global secDialog
 
         def setSkinPack():
@@ -108,7 +114,8 @@ def gamemodeDialog():
 
             confirmButton = ttk.Button(root2, text="Wählen", command=setSkinPack)
             confirmButton.pack()
-
+            
+            root2.protocol("WM_DELETE_WINDOW", destroyRoot2)
             root2.mainloop()
 
     def openAccountDialog():
@@ -118,6 +125,12 @@ def gamemodeDialog():
         accAction = None
 
         def enterPassword():
+            def destroyRoot3():
+                global secDialog
+            
+                secDialog = False
+                root3.destroy()
+                
             def registerUser():
                 global secDialog
 
@@ -169,7 +182,8 @@ def gamemodeDialog():
             elif accAction == "logIn":
                 confirmButton = ttk.Button(root3, text="Einloggen", command=logInUser)
                 confirmButton.pack()
-
+            
+            root3.protocol("WM_DELETE_WINDOW", destroyRoot3)
             root3.mainloop()
 
         def setReg():
@@ -187,6 +201,12 @@ def gamemodeDialog():
             enterPassword()
 
         if not secDialog:
+            def destroyLogOrReg():
+                global secDialog
+            
+                secDialog = False
+                loginOrRegister.destroy()
+                
             secDialog = True
 
             loginOrRegister = tkinter.Tk()
@@ -197,6 +217,8 @@ def gamemodeDialog():
 
             logIn = ttk.Button(loginOrRegister, text="Einloggen", command=setLog)
             logIn.pack(side="right")
+            
+            loginOrRegister.protocol("WM_DELETE_WINDOW", destroyLogOrReg)
 
             loginOrRegister.mainloop()
 
