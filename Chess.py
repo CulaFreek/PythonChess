@@ -31,14 +31,14 @@ def resetChessField():
     # Schachfeld
                     #   0           1          2           3          4       5       6        7          8          9     10
     chessField = [  # fieldKey, fieldNumber, figure, figureTexture, leftX, yAbove, centerX, centerY, figureColor, column, row
-        ("8a", 1, "black_1_rook", Skin.blackRook, 100 * mScreenW, 100 * mScreenH, 150 * mScreenW, 150 * mScreenH, "black", 1, 1), ("8b", 2, "black_knight", Skin.blackKnight, 200 * mScreenW, 100 * mScreenH, 250 * mScreenW, 150 * mScreenH, "black", 1, 2), ("8c", 3, "black_bishop", Skin.blackBishop, 300 * mScreenW, 100 * mScreenH, 350 * mScreenW, 150 * mScreenH, "black", 1, 3), ("8d", 4, "black_queen", Skin.blackQueen, 400 * mScreenW, 100 * mScreenH, 450 * mScreenW, 150 * mScreenH, "black", 1, 4), ("8e", 5, "black_king", Skin.blackKing, 500 * mScreenW, 100 * mScreenH, 550 * mScreenW, 150 * mScreenH, "black", 1, 5), ("8f", 6, "black_bishop", Skin.blackBishop, 600 * mScreenW, 100 * mScreenH, 650 * mScreenW, 150 * mScreenH, "black", 1, 6), ("8g", 7, "black_knight", Skin.blackKnight, 700 * mScreenW, 100 * mScreenH, 750 * mScreenW, 150 * mScreenH, "black", 1, 7), ("8h", 8, "black_2_rook", Skin.blackRook, 800 * mScreenW, 100 * mScreenH, 850 * mScreenW, 150 * mScreenH, "black", 1, 8),
-        ("7a", 9, "black_pawn", Skin.blackPawn, 100 * mScreenW, 200 * mScreenH, 150 * mScreenW, 250 * mScreenH, "black", 2, 1), ("7b", 10, "black_pawn", Skin.blackPawn, 200 * mScreenW, 200 * mScreenH, 250 * mScreenW, 250 * mScreenH, "black", 2, 2), ("7c", 11, "black_pawn", Skin.blackPawn, 300 * mScreenW, 200 * mScreenH, 350 * mScreenW, 250 * mScreenH, "black", 2, 3), ("7d", 12, "black_pawn", Skin.blackPawn, 400 * mScreenW, 200 * mScreenH, 450 * mScreenW, 250 * mScreenH, "black", 2, 4), ("7e", 13, "black_pawn", Skin.blackPawn, 500 * mScreenW, 200 * mScreenH, 550 * mScreenW, 250 * mScreenH, "black", 2, 5), ("7f", 14, "black_pawn", Skin.blackPawn, 600 * mScreenW, 200 * mScreenH, 650 * mScreenW, 250 * mScreenH, "black", 2, 6), ("7g", 15, "black_pawn", Skin.blackPawn, 700 * mScreenW, 200 * mScreenH, 750 * mScreenW, 250 * mScreenH, "black", 2, 7), ("7h", 16, "black_pawn", Skin.blackPawn, 800 * mScreenW, 200 * mScreenH, 850 * mScreenW, 250 * mScreenH, "black", 2, 8),
-        ("6a", 17, "", "", 100 * mScreenW, 300 * mScreenH, 150 * mScreenW, 350 * mScreenH, "", 3, 1), ("6b", 18, "", "", 200 * mScreenW, 300 * mScreenH, 250 * mScreenW, 350 * mScreenH, "", 3, 2), ("6c", 19, "", "", 300 * mScreenW, 300 * mScreenH, 350 * mScreenW, 350 * mScreenH, "", 3, 3), ("6d", 20, "", "", 400 * mScreenW, 300 * mScreenH, 450 * mScreenW, 350 * mScreenH, "", 3, 4), ("6e", 21, "", "", 500 * mScreenW, 300 * mScreenH, 550 * mScreenW, 350 * mScreenH, "", 3, 5), ("6f", 22, "", "", 600 * mScreenW, 300 * mScreenH, 650 * mScreenW, 350 * mScreenH, "", 3, 6), ("6g", 23, "", "", 700 * mScreenW, 300 * mScreenH, 750 * mScreenW, 350 * mScreenH, "", 3, 7), ("6h", 24, "", "", 800 * mScreenW, 300 * mScreenH, 850 * mScreenW, 350 * mScreenH, "", 3, 8),
-        ("5a", 25, "", "", 100 * mScreenW, 400 * mScreenH, 150 * mScreenW, 450 * mScreenH, "", 4, 1), ("5b", 26, "", "", 200 * mScreenW, 400 * mScreenH, 250 * mScreenW, 450 * mScreenH, "", 4, 2), ("5c", 27, "", "", 300 * mScreenW, 400 * mScreenH, 350 * mScreenW, 450 * mScreenH, "", 4, 3), ("5d", 28, "", "", 400 * mScreenW, 400 * mScreenH, 450 * mScreenW, 450 * mScreenH, "", 4, 4), ("5e", 29, "", "", 500 * mScreenW, 400 * mScreenH, 550 * mScreenW, 450 * mScreenH, "", 4, 5), ("5f", 30, "", "", 600 * mScreenW, 400 * mScreenH, 650 * mScreenW, 450 * mScreenH, "", 4, 6), ("5g", 31, "", "", 700 * mScreenW, 400 * mScreenH, 750 * mScreenW, 450 * mScreenH, "", 4, 7), ("5h", 32, "", "", 800 * mScreenW, 400 * mScreenH, 850 * mScreenW, 450 * mScreenH, "", 4, 8),
-        ("4a", 33, "", "", 100 * mScreenW, 500 * mScreenH, 150 * mScreenW, 550 * mScreenH, "", 5, 1), ("4b", 34, "", "", 200 * mScreenW, 500 * mScreenH, 250 * mScreenW, 550 * mScreenH, "", 5, 2), ("4c", 35, "", "", 300 * mScreenW, 500 * mScreenH, 350 * mScreenW, 550 * mScreenH, "", 5, 3), ("4d", 36, "", "", 400 * mScreenW, 500 * mScreenH, 450 * mScreenW, 550 * mScreenH, "", 5, 4), ("4e", 37, "", "", 500 * mScreenW, 500 * mScreenH, 550 * mScreenW, 550 * mScreenH, "", 5, 5), ("4f", 38, "", "", 600 * mScreenW, 500 * mScreenH, 650 * mScreenW, 550 * mScreenH, "", 5, 6), ("4g", 39, "", "", 700 * mScreenW, 500 * mScreenH, 750 * mScreenW, 550 * mScreenH, "", 5, 7), ("4h", 40, "", "", 800 * mScreenW, 500 * mScreenH, 850 * mScreenW, 550 * mScreenH, "", 5, 8),
-        ("3a", 41, "", "", 100 * mScreenW, 600 * mScreenH, 150 * mScreenW, 650 * mScreenH, "", 6, 1), ("3b", 42, "", "", 200 * mScreenW, 600 * mScreenH, 250 * mScreenW, 650 * mScreenH, "", 6, 2), ("3c", 43, "", "", 300 * mScreenW, 600 * mScreenH, 350 * mScreenW, 650 * mScreenH, "", 6, 3), ("3d", 44, "", "", 400 * mScreenW, 600 * mScreenH, 450 * mScreenW, 650 * mScreenH, "", 6, 4), ("3e", 45, "", "", 500 * mScreenW, 600 * mScreenH, 550 * mScreenW, 650 * mScreenH, "", 6, 5), ("3f", 46, "", "", 600 * mScreenW, 600 * mScreenH, 650 * mScreenW, 650 * mScreenH, "", 6, 6), ("3g", 47, "", "", 700 * mScreenW, 600 * mScreenH, 750 * mScreenW, 650 * mScreenH, "", 6, 7), ("3h", 48, "", "", 800 * mScreenW, 600 * mScreenH, 850 * mScreenW, 650 * mScreenH, "", 6, 8),
-        ("2a", 49, "white_pawn", Skin.whitePawn, 100 * mScreenW, 700 * mScreenH, 150 * mScreenW, 750 * mScreenH, "white", 7, 1), ("2b", 50, "white_pawn", Skin.whitePawn, 200 * mScreenW, 700 * mScreenH, 250 * mScreenW, 750 * mScreenH, "white", 7, 2), ("2c", 51, "white_pawn", Skin.whitePawn, 300 * mScreenW, 700 * mScreenH, 350 * mScreenW, 750 * mScreenH, "white", 7, 3), ("2d", 52, "white_pawn", Skin.whitePawn, 400 * mScreenW, 700 * mScreenH, 450 * mScreenW, 750 * mScreenH, "white", 7, 4), ("2e", 53, "white_pawn", Skin.whitePawn, 500 * mScreenW, 700 * mScreenH, 550 * mScreenW, 750 * mScreenH, "white", 7, 5), ("2f", 54, "white_pawn", Skin.whitePawn, 600 * mScreenW, 700 * mScreenH, 650 * mScreenW, 750 * mScreenH, "white", 7, 6), ("2g", 55, "white_pawn", Skin.whitePawn, 700 * mScreenW, 700 * mScreenH, 750 * mScreenW, 750 * mScreenH, "white", 7, 7), ("2h", 56, "white_pawn", Skin.whitePawn, 800 * mScreenW, 700 * mScreenH, 850 * mScreenW, 750 * mScreenH, "white", 7, 8),
-        ("1a", 57, "white_1_rook", Skin.whiteRook, 100 * mScreenW, 800 * mScreenH, 150 * mScreenW, 850 * mScreenH, "white", 8, 1), ("1b", 58, "white_knight", Skin.whiteKnight, 200 * mScreenW, 800 * mScreenH, 250 * mScreenW, 850 * mScreenH, "white", 8, 2), ("1c", 59, "white_bishop", Skin.whiteBishop, 300 * mScreenW, 800 * mScreenH, 350 * mScreenW, 850 * mScreenH, "white", 8, 3), ("1d", 60, "white_queen", Skin.whiteQueen, 400 * mScreenW, 800 * mScreenH, 450 * mScreenW, 850 * mScreenH, "white", 8, 4), ("1e", 61, "white_king", Skin.whiteKing, 500 * mScreenW, 800 * mScreenH, 550 * mScreenW, 850 * mScreenH, "white", 8, 5), ("1f", 62, "white_bishop", Skin.whiteBishop, 600 * mScreenW, 800 * mScreenH, 650 * mScreenW, 850 * mScreenH, "white", 8, 6), ("1g", 63, "white_knight", Skin.whiteKnight, 700 * mScreenW, 800 * mScreenH, 750 * mScreenW, 850 * mScreenH, "white", 8, 7), ("1h", 64, "white_2_rook", Skin.whiteRook, 800 * mScreenW, 800 * mScreenH, 850 * mScreenW, 850 * mScreenH, "white", 8, 8)
+        ("a8", 1, "black_1_rook", Skin.blackRook, 100 * mScreenW, 100 * mScreenH, 150 * mScreenW, 150 * mScreenH, "black", 1, 1), ("b8", 2, "black_knight", Skin.blackKnight, 200 * mScreenW, 100 * mScreenH, 250 * mScreenW, 150 * mScreenH, "black", 1, 2), ("c8", 3, "black_bishop", Skin.blackBishop, 300 * mScreenW, 100 * mScreenH, 350 * mScreenW, 150 * mScreenH, "black", 1, 3), ("d8", 4, "black_queen", Skin.blackQueen, 400 * mScreenW, 100 * mScreenH, 450 * mScreenW, 150 * mScreenH, "black", 1, 4), ("e8", 5, "black_king", Skin.blackKing, 500 * mScreenW, 100 * mScreenH, 550 * mScreenW, 150 * mScreenH, "black", 1, 5), ("f8", 6, "black_bishop", Skin.blackBishop, 600 * mScreenW, 100 * mScreenH, 650 * mScreenW, 150 * mScreenH, "black", 1, 6), ("g8", 7, "black_knight", Skin.blackKnight, 700 * mScreenW, 100 * mScreenH, 750 * mScreenW, 150 * mScreenH, "black", 1, 7), ("h8", 8, "black_2_rook", Skin.blackRook, 800 * mScreenW, 100 * mScreenH, 850 * mScreenW, 150 * mScreenH, "black", 1, 8),
+        ("a7", 9, "black_pawn", Skin.blackPawn, 100 * mScreenW, 200 * mScreenH, 150 * mScreenW, 250 * mScreenH, "black", 2, 1), ("b7", 10, "black_pawn", Skin.blackPawn, 200 * mScreenW, 200 * mScreenH, 250 * mScreenW, 250 * mScreenH, "black", 2, 2), ("c7", 11, "black_pawn", Skin.blackPawn, 300 * mScreenW, 200 * mScreenH, 350 * mScreenW, 250 * mScreenH, "black", 2, 3), ("d7", 12, "black_pawn", Skin.blackPawn, 400 * mScreenW, 200 * mScreenH, 450 * mScreenW, 250 * mScreenH, "black", 2, 4), ("e7", 13, "black_pawn", Skin.blackPawn, 500 * mScreenW, 200 * mScreenH, 550 * mScreenW, 250 * mScreenH, "black", 2, 5), ("f7", 14, "black_pawn", Skin.blackPawn, 600 * mScreenW, 200 * mScreenH, 650 * mScreenW, 250 * mScreenH, "black", 2, 6), ("g7", 15, "black_pawn", Skin.blackPawn, 700 * mScreenW, 200 * mScreenH, 750 * mScreenW, 250 * mScreenH, "black", 2, 7), ("h7", 16, "black_pawn", Skin.blackPawn, 800 * mScreenW, 200 * mScreenH, 850 * mScreenW, 250 * mScreenH, "black", 2, 8),
+        ("a6", 17, "", "", 100 * mScreenW, 300 * mScreenH, 150 * mScreenW, 350 * mScreenH, "", 3, 1), ("b6", 18, "", "", 200 * mScreenW, 300 * mScreenH, 250 * mScreenW, 350 * mScreenH, "", 3, 2), ("c6", 19, "", "", 300 * mScreenW, 300 * mScreenH, 350 * mScreenW, 350 * mScreenH, "", 3, 3), ("d6", 20, "", "", 400 * mScreenW, 300 * mScreenH, 450 * mScreenW, 350 * mScreenH, "", 3, 4), ("e6", 21, "", "", 500 * mScreenW, 300 * mScreenH, 550 * mScreenW, 350 * mScreenH, "", 3, 5), ("f6", 22, "", "", 600 * mScreenW, 300 * mScreenH, 650 * mScreenW, 350 * mScreenH, "", 3, 6), ("g6", 23, "", "", 700 * mScreenW, 300 * mScreenH, 750 * mScreenW, 350 * mScreenH, "", 3, 7), ("h6", 24, "", "", 800 * mScreenW, 300 * mScreenH, 850 * mScreenW, 350 * mScreenH, "", 3, 8),
+        ("a5", 25, "", "", 100 * mScreenW, 400 * mScreenH, 150 * mScreenW, 450 * mScreenH, "", 4, 1), ("b5", 26, "", "", 200 * mScreenW, 400 * mScreenH, 250 * mScreenW, 450 * mScreenH, "", 4, 2), ("c5", 27, "", "", 300 * mScreenW, 400 * mScreenH, 350 * mScreenW, 450 * mScreenH, "", 4, 3), ("d5", 28, "", "", 400 * mScreenW, 400 * mScreenH, 450 * mScreenW, 450 * mScreenH, "", 4, 4), ("e5", 29, "", "", 500 * mScreenW, 400 * mScreenH, 550 * mScreenW, 450 * mScreenH, "", 4, 5), ("f5", 30, "", "", 600 * mScreenW, 400 * mScreenH, 650 * mScreenW, 450 * mScreenH, "", 4, 6), ("g5", 31, "", "", 700 * mScreenW, 400 * mScreenH, 750 * mScreenW, 450 * mScreenH, "", 4, 7), ("h5", 32, "", "", 800 * mScreenW, 400 * mScreenH, 850 * mScreenW, 450 * mScreenH, "", 4, 8),
+        ("a4", 33, "", "", 100 * mScreenW, 500 * mScreenH, 150 * mScreenW, 550 * mScreenH, "", 5, 1), ("b4", 34, "", "", 200 * mScreenW, 500 * mScreenH, 250 * mScreenW, 550 * mScreenH, "", 5, 2), ("c4", 35, "", "", 300 * mScreenW, 500 * mScreenH, 350 * mScreenW, 550 * mScreenH, "", 5, 3), ("d4", 36, "", "", 400 * mScreenW, 500 * mScreenH, 450 * mScreenW, 550 * mScreenH, "", 5, 4), ("e4", 37, "", "", 500 * mScreenW, 500 * mScreenH, 550 * mScreenW, 550 * mScreenH, "", 5, 5), ("f4", 38, "", "", 600 * mScreenW, 500 * mScreenH, 650 * mScreenW, 550 * mScreenH, "", 5, 6), ("g4", 39, "", "", 700 * mScreenW, 500 * mScreenH, 750 * mScreenW, 550 * mScreenH, "", 5, 7), ("h4", 40, "", "", 800 * mScreenW, 500 * mScreenH, 850 * mScreenW, 550 * mScreenH, "", 5, 8),
+        ("a3", 41, "", "", 100 * mScreenW, 600 * mScreenH, 150 * mScreenW, 650 * mScreenH, "", 6, 1), ("b3", 42, "", "", 200 * mScreenW, 600 * mScreenH, 250 * mScreenW, 650 * mScreenH, "", 6, 2), ("c3", 43, "", "", 300 * mScreenW, 600 * mScreenH, 350 * mScreenW, 650 * mScreenH, "", 6, 3), ("d3", 44, "", "", 400 * mScreenW, 600 * mScreenH, 450 * mScreenW, 650 * mScreenH, "", 6, 4), ("e3", 45, "", "", 500 * mScreenW, 600 * mScreenH, 550 * mScreenW, 650 * mScreenH, "", 6, 5), ("f3", 46, "", "", 600 * mScreenW, 600 * mScreenH, 650 * mScreenW, 650 * mScreenH, "", 6, 6), ("g3", 47, "", "", 700 * mScreenW, 600 * mScreenH, 750 * mScreenW, 650 * mScreenH, "", 6, 7), ("h3", 48, "", "", 800 * mScreenW, 600 * mScreenH, 850 * mScreenW, 650 * mScreenH, "", 6, 8),
+        ("a2", 49, "white_pawn", Skin.whitePawn, 100 * mScreenW, 700 * mScreenH, 150 * mScreenW, 750 * mScreenH, "white", 7, 1), ("b2", 50, "white_pawn", Skin.whitePawn, 200 * mScreenW, 700 * mScreenH, 250 * mScreenW, 750 * mScreenH, "white", 7, 2), ("c2", 51, "white_pawn", Skin.whitePawn, 300 * mScreenW, 700 * mScreenH, 350 * mScreenW, 750 * mScreenH, "white", 7, 3), ("d2", 52, "white_pawn", Skin.whitePawn, 400 * mScreenW, 700 * mScreenH, 450 * mScreenW, 750 * mScreenH, "white", 7, 4), ("e2", 53, "white_pawn", Skin.whitePawn, 500 * mScreenW, 700 * mScreenH, 550 * mScreenW, 750 * mScreenH, "white", 7, 5), ("f2", 54, "white_pawn", Skin.whitePawn, 600 * mScreenW, 700 * mScreenH, 650 * mScreenW, 750 * mScreenH, "white", 7, 6), ("g2", 55, "white_pawn", Skin.whitePawn, 700 * mScreenW, 700 * mScreenH, 750 * mScreenW, 750 * mScreenH, "white", 7, 7), ("h2", 56, "white_pawn", Skin.whitePawn, 800 * mScreenW, 700 * mScreenH, 850 * mScreenW, 750 * mScreenH, "white", 7, 8),
+        ("a1", 57, "white_1_rook", Skin.whiteRook, 100 * mScreenW, 800 * mScreenH, 150 * mScreenW, 850 * mScreenH, "white", 8, 1), ("b1", 58, "white_knight", Skin.whiteKnight, 200 * mScreenW, 800 * mScreenH, 250 * mScreenW, 850 * mScreenH, "white", 8, 2), ("c1", 59, "white_bishop", Skin.whiteBishop, 300 * mScreenW, 800 * mScreenH, 350 * mScreenW, 850 * mScreenH, "white", 8, 3), ("d1", 60, "white_queen", Skin.whiteQueen, 400 * mScreenW, 800 * mScreenH, 450 * mScreenW, 850 * mScreenH, "white", 8, 4), ("e1", 61, "white_king", Skin.whiteKing, 500 * mScreenW, 800 * mScreenH, 550 * mScreenW, 850 * mScreenH, "white", 8, 5), ("f1", 62, "white_bishop", Skin.whiteBishop, 600 * mScreenW, 800 * mScreenH, 650 * mScreenW, 850 * mScreenH, "white", 8, 6), ("g1", 63, "white_knight", Skin.whiteKnight, 700 * mScreenW, 800 * mScreenH, 750 * mScreenW, 850 * mScreenH, "white", 8, 7), ("h1", 64, "white_2_rook", Skin.whiteRook, 800 * mScreenW, 800 * mScreenH, 850 * mScreenW, 850 * mScreenH, "white", 8, 8)
     ]
 
 
@@ -70,7 +70,13 @@ gameExit = False
 
 
 def repaint():  # Neu zeichen des Schachfeldes nach einer Bewegung --->>> Einfachste Möglichkeit Figur texturen wieder vom Feld zu entfernen
-    letters = ["1", "2", "3", "4", "5", "6", "7", "8", "a", "b", "c", "d", "e", "f", "g", "h"]
+    letters = ["8", "7", "6", "5", "4", "3", "2", "1", "a", "b", "c", "d", "e", "f", "g", "h"]
+    if not onlineMode:
+        if activePlayer == "black":
+            letters = ["1", "2", "3", "4", "5", "6", "7", "8", "h", "g", "f", "e", "d", "c", "b", "a"]
+    else:
+        if playerEnemy == "white":
+            letters = ["1", "2", "3", "4", "5", "6", "7", "8", "h", "g", "f", "e", "d", "c", "b", "a"]
     letter = ""
     pygameWindow.fill((250, 250, 250))  # Komplettes Fenster neu färben, da sonst Grafikfehler entstehen
 
@@ -488,7 +494,16 @@ def figureMove(sourceIndex, moveToIndex, automatic=False, illegalMoveTest=False)
     global rochadeMoved
     global rochadeFigurePlace
 
+    prefix = ""
+    action = "-"
+    addition = ""
+    promote = ""
+    enPas = ""
+
+    rochadeNotation = ""
+
     skipSound = False
+    rochade = False
     
     lastChessField = [] + chessField  # Für den Durchlauf eine Kopie des Feldes erstellen, um bei einem illegalen Zug alle Figuren leicht zurücksetzen zu können
     lastRochadeMoved = [] + rochadeMoved  # Für den Durchlauf eine Kopie der Liste erstellen, um bei einem illegalen Zug die Liste mit den bewegten Figuren zurücksetzen zu können
@@ -500,6 +515,20 @@ def figureMove(sourceIndex, moveToIndex, automatic=False, illegalMoveTest=False)
     mFieldKey, mFieldNumber, mFigure, mFigureTexture, mLeftX, mYAbove, mCenterX, mCenterY, mFigureColor, mColumn, mRow = moveToField  # Entpacken des move_to_fields
     
     if not automatic and not illegalMoveTest:  # Die folgenden 3 Methoden dürfen nur bei einem Zug und nicht bei einer Zugüberprüfung des Computers aufgerufen werden
+
+        if sFigure.endswith("rook"):
+            prefix = "T"
+        elif sFigure.endswith("knight"):
+            prefix = "S"
+        elif sFigure.endswith("bishop"):
+            prefix = "L"
+        elif sFigure.endswith("queen"):
+            prefix = "D"
+        elif sFigure.endswith("king"):
+            prefix = "K"
+
+        if mFigure != "":
+            action = "x"
 
         if onlineMode:
             if not automatic and not illegalMoveTest:
@@ -519,6 +548,8 @@ def figureMove(sourceIndex, moveToIndex, automatic=False, illegalMoveTest=False)
 
                 pygame.mixer.music.load(Skin.hitEnPassanteSound)
                 pygame.mixer.music.play(0, 0.0)
+
+                enPas = "e.p."
 
                 skipSound = True
 
@@ -553,24 +584,28 @@ def figureMove(sourceIndex, moveToIndex, automatic=False, illegalMoveTest=False)
                     
                     if eFigure == 1:
                         eFigure = "_rook"
+                        promote = "T"
                         if sFigureColor == "white":
                             rFigure = Skin.whiteRook
                         else:
                             rFigure = Skin.blackRook
                     elif eFigure == 2:
                         eFigure = "_knight"
+                        promote = "S"
                         if sFigureColor == "white":
                             rFigure = Skin.whiteKnight
                         else:
                             rFigure = Skin.blackKnight
                     elif eFigure == 3:
                         eFigure = "_bishop"
+                        promote = "L"
                         if sFigureColor == "white":
                             rFigure = Skin.whiteBishop
                         else:
                             rFigure = Skin.blackBishop
                     elif eFigure == 4:
                         eFigure = "_queen"
+                        promote = "D"
                         if sFigureColor == "white":
                             rFigure = Skin.whiteQueen
                         else:
@@ -629,6 +664,7 @@ def figureMove(sourceIndex, moveToIndex, automatic=False, illegalMoveTest=False)
         for t in rochadeFigurePlace:
             clickedField, kFieldNumber, k, kTexture, kColor, kT, rookFieldNumber, rook, rookTexture, rookColor, rookT = t
             if clickedField - 1 == moveToIndex:  # Prüft für jede Rochade, die in diesem Zug hätte durchgeführt werden können, ob sie durchgeführt wurde
+                rochade = True
                 
                 kingField = chessField[kFieldNumber - 1]  # weder source noch moveto Feld, da sich König und Turm bei der Rochade auf andere Felder bewegen, weshalb hier diese Felder entpackt werden müssen
                 rookField = chessField[rookFieldNumber - 1]  # weder source noch moveto Feld, da sich König und Turm bei der Rochade auf andere Felder bewegen, weshalb hier diese Felder entpackt werden müssen
@@ -644,7 +680,12 @@ def figureMove(sourceIndex, moveToIndex, automatic=False, illegalMoveTest=False)
                 # Moveto leeren, da sich Turm und König ja bereits auf andere Felder bewegt haben 
                 mFigure = ""
                 mFigureTexture = ""
-                mFigureColor = "" 
+                mFigureColor = ""
+
+                if abs(mFieldNumber - eRookFieldNumber) == 2:
+                    rochadeNotation = "0_0"
+                elif abs(mFieldNumber - eRookFieldNumber) == 3:
+                    rochadeNotation = "0_0_0"
     
     chessField[sourceIndex] = (sFieldKey, sFieldNumber, sFigure, sFigureTexture, sLeftX, sYAbove, sCenterX, sCenterY, sFigureColor, sColumn, sRow)
     chessField[moveToIndex] = (mFieldKey, mFieldNumber, mFigure, mFigureTexture, mLeftX, mYAbove, mCenterX, mCenterY, mFigureColor, mColumn, mRow)
@@ -659,12 +700,26 @@ def figureMove(sourceIndex, moveToIndex, automatic=False, illegalMoveTest=False)
         return check
 
     if not automatic and not illegalMoveTest:  # Bei automatischem Programmdurchlauf würden im folgendem weitere automatische Programmdurchläufe entstehen
-        if not onlineMode:
-            playerChange()  # Spielerwechsel mit Spieler text, enemy und Zug counter
-            
+        playerChange()
+
+        checkTest = checkCheck()
+        if checkTest:
+            addition = "+"
+            checkMateTest = checkCheckMate()  # TODO Funktioniert aus irgendeinem Grund nicht korrekt (Nur für den Hashtag in der Chess-Notation)
+            if checkMateTest:
+                addition = "#"
+        if not rochade:
+            notation = prefix + sFieldKey + action + mFieldKey + addition + promote + enPas
+        else:
+            notation = rochadeNotation
+        print(notation)
+
+        playerChange()
+
         moves += 1  
         
         if not onlineMode:
+            playerChange()  # Spielerwechsel mit Spieler text, enemy und Zug counter
             repaint()  # Repainten des Schachfeldes, da sich die Figuren Grafisch bisher noch nicht bewegt haben
     
     if automatic:
@@ -833,7 +888,7 @@ def figureSelect(posX, posY):  # Funktion die auf Aufruf des obigen Maus-callbac
                                     stalemate = checkStalemate()
                                 
                                 if checkMate:
-                                    playerChange()  # Wechseln des Gegners, da für seine Figuren die möglichen Züge ermittelt werden sollen, und seine Figuren die Figuren des aktiven Spielers schlagen könnten
+                                    playerChange()
 
                                     pygame.mixer.music.load(Skin.winSound)
                                     pygame.mixer.music.play(0, 0.0)
