@@ -1,3 +1,5 @@
+import math
+
 import Chess
 
 # piece-square tables für alle figuren die angeben wie gut sie auf den jeweiligen feldern positioniert sind
@@ -62,12 +64,10 @@ kingTable = {
     8: 20, 7: 30, 6: 10, 5: 0, 4: 0, 3: 10, 2: 30, 1: 20
 }
 
-# Funktion, die das aktuelle Board bewertet und einen Score anhand folgender Kriterien zurückgibt:
+#Funktion, die das aktuelle Board bewertet und einen Score anhand folgender Kriterien zurueckgibt:
 # 1. Pure Materialkosten,
 # 2. Position des Materials,
 # (work in progress)
-
-
 def evaluate():
     score = 0
     for field in Chess.chessField:
@@ -101,49 +101,66 @@ def evaluate():
             elif figure.endswith("king"):
                 score -= 20000
     return score
-# Funktion, die den besten möglichen zug (aktuell noch tiefe 1) zurückgibt
 
 
-def search(depth):
-    if depth == 0:
-        return evaluate()
-
-    moves = getMoves()
-    if moves.length == 0:
-        # if checkCheck():
-        #    return -math.inf
-        return 0
-
-    bestValue = -2000000
-
-    # durch alle möglichen Züge loopen und evaluaten wie gut der move ist
-    for move in moves:
-        # TODO: move temporär machen und das resultierende board evaluaten, vielleicht nur veränderung eval für schnelleren code (check promote true/false)
-        makeMove(move)
-        value = -search(depth - 1)
-        bestValue = max(value, bestValue)
-        unmakeMove(move)
-
-    return bestValue
-
-
-def makeMove(move):
+def makemove(move):
     return move
-
-
-def unmakeMove(move):
+def unmakemove(move):
     return move
-
-
 def getMoves():
     print("DEBUG")
 
-
 def getMove():
     Chess.selectedField = []
-    fieldKey, fieldNumber, figure, figureTexture, leftX, yAbove, centerX, centerY, figureColor, column, row = Chess.chessField[8]
-    Chess.selectedField.append((centerX, centerY, figure, fieldNumber, column, row))
-    Chess.selectedField.append(0)
-    move = Chess.possiblePawnMoves()
-    print(move)
-    return move
+    moves = []
+    for field in Chess.chessField:
+        fieldKey, fieldNumber, figure, figureTexture, leftX, yAbove, centerX, centerY, figureColor, column, row = field
+        Chess.selectedField.append((centerX, centerY, figure, fieldNumber, column, row))
+        print(figure)
+        if figureColor != "black":
+            continue
+        elif figure.endswith("pawn"):
+            print(Chess.possiblePawnMoves())
+            moves.append(Chess.possiblePawnMoves())
+            moves.append(("P","p"))
+        elif figure.endswith("knight"):
+            moves.append(Chess.possibleKnightMoves())
+        elif figure.endswith("bishop"):
+            moves.append(Chess.possibleBishopMoves())
+        elif figure.endswith("rook"):
+            moves.append(Chess.possibleRookMoves())
+        elif figure.endswith("queen"):
+            moves.append(Chess.possibleQueenMoves())
+        elif figure.endswith("king"):
+            moves.append(Chess.possibleKingMoves())
+    print(moves)
+    #Chess.selectedField.append((centerX, centerY, figure, fieldNumber, column, row))
+    #Chess.selectedField.append(0)
+    #move = Chess.possiblePawnMoves()
+    #print(move)
+    #return move
+        
+#minimax algorithm with alpha beta pruning
+def maxi(depth):
+    if(depth == 0):
+        return evaluate()
+    max = -10000000
+    allmoves = getMoves()
+    for move in allmoves:
+        score = mini(depth - 1)
+        if (score > max):
+            max = score
+    return max
+
+def mini(depth):
+    if(depth == 0):
+        return -evaluate()
+    min = 10000000
+    allmoves = getMoves()
+    for move in allmoves:
+        score = maxi(depth - 1)
+        if (score > min):
+            min = score
+    return min
+
+
