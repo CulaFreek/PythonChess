@@ -1,5 +1,4 @@
 import math
-
 import Chess
 
 # piece-square tables für alle figuren die angeben wie gut sie auf den jeweiligen feldern positioniert sind
@@ -68,6 +67,8 @@ kingTable = {
 # 1. Pure Materialkosten,
 # 2. Position des Materials,
 # (work in progress)
+
+
 def evaluate():
     score = 0
     for field in Chess.chessField:
@@ -105,35 +106,44 @@ def evaluate():
 
 def makemove(move):
     return move
+
+
 def unmakemove(move):
     return move
+
+
 def getMoves():
     print("DEBUG")
 
+
 def getMove():
-    Chess.selectedField = []
     moves = []
+    index = 0
     for field in Chess.chessField:
+        Chess.selectedField = []
         fieldKey, fieldNumber, figure, figureTexture, leftX, yAbove, centerX, centerY, figureColor, column, row = field
-        Chess.selectedField.append((centerX, centerY, figure, fieldNumber, column, row))
-        print(figure)
-        if figureColor != "black":
-            continue
-        elif figure.endswith("pawn"):
-            print(Chess.possiblePawnMoves())
-            moves.append(Chess.possiblePawnMoves())
-            moves.append(("P","p"))
-        elif figure.endswith("knight"):
-            moves.append(Chess.possibleKnightMoves())
-        elif figure.endswith("bishop"):
-            moves.append(Chess.possibleBishopMoves())
-        elif figure.endswith("rook"):
-            moves.append(Chess.possibleRookMoves())
-        elif figure.endswith("queen"):
-            moves.append(Chess.possibleQueenMoves())
-        elif figure.endswith("king"):
-            moves.append(Chess.possibleKingMoves())
-    print(moves)
+        if figure.startswith("black"):
+            Chess.selectedField.append((centerX, centerY, figure, fieldNumber, column, row))
+            Chess.selectedField.append(index)
+            #print(figure)
+            if figure.endswith("pawn"):
+                print("p", Chess.possiblePawnMoves())
+                moves.append(Chess.possiblePawnMoves())
+                moves.append(("P", "p"))
+            elif figure.endswith("knight"):
+                print("k", Chess.possibleKnightMoves())
+                moves.append(Chess.possibleKnightMoves())
+            elif figure.endswith("bishop"):
+                moves.append(Chess.possibleBishopMoves())
+            elif figure.endswith("rook"):
+                moves.append(Chess.possibleRookMoves())
+            elif figure.endswith("queen"):
+                moves.append(Chess.possibleQueenMoves())
+            elif figure.endswith("king"):
+                moves.append(Chess.possibleKingMoves())
+
+        index += 1
+    #print(moves)
     #Chess.selectedField.append((centerX, centerY, figure, fieldNumber, column, row))
     #Chess.selectedField.append(0)
     #move = Chess.possiblePawnMoves()
@@ -141,6 +151,8 @@ def getMove():
     #return move
         
 #minimax algorithm with alpha beta pruning
+
+
 def maxi(depth):
     if(depth == 0):
         return evaluate()
@@ -151,6 +163,7 @@ def maxi(depth):
         if (score > max):
             max = score
     return max
+
 
 def mini(depth):
     if(depth == 0):
