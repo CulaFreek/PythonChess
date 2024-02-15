@@ -9,6 +9,8 @@ import pickle
 import tkinter
 from tkinter import ttk
 
+import botChess
+
 if __name__ == "__main__":
     sys.exit("Starte Gamemode.py, um das Spiel zu starten")
 
@@ -21,6 +23,7 @@ mScreenH = screenH / 1000  # Teilen durch 1000, da das Schachfeld in einem 1000 
 black = (0, 0, 0)
 white = (250, 250, 250)
 gray = (198, 198, 198)
+red = (250, 0, 0)
 
 chessField = []
 
@@ -130,6 +133,23 @@ def figureRepaint():
             pygameWindow.blit(image, (a, b))
     pygame.display.update()
        
+
+def toast(message, duration=0, color=red):
+    font = pygame.font.Font(None, 50)
+    text = font.render(message, True, color)
+
+    toastWidth = text.get_width()
+    toastHeight = text.get_height()
+    toastRect = pygame.Rect(350 - toastWidth // 4, 350 - toastHeight // 4, toastWidth, toastHeight)
+
+    textRect = text.get_rect(center=toastRect.center)
+    pygameWindow.blit(text, textRect)
+
+    pygame.display.flip()
+    if duration != 0:
+        pygame.time.wait(duration * 1000)
+        repaint()
+
 
 def startClient():  # Funktion zum Starten des Clients / verbinden mit dem Server
     global clientSocket
@@ -895,19 +915,19 @@ def figureSelect(posX, posY):  # Funktion die auf Aufruf des obigen Maus-callbac
 
                                     inputAllowed = False  # Weiteren Input nach Spielende verhindern
                                     pygame.display.set_caption("SPIELENDE   |   " + activePlayerText + " hat das Spiel gewonnen")  # Titel am Spielende aktualisieren
-                                    informationDialog("Schachmatt   |   " + activePlayerText + " gewinnt das Spiel", activePlayerText + " hat das Spiel gewonnen!")
+                                    toast(activePlayerText + " hat das Spiel gewonnen!")
                                     
                                 if not checkMate and check:
                                     pygame.mixer.music.load(Skin.checkSound)
                                     pygame.mixer.music.play(0, 0.0)
-                                    informationDialog("SCHACH", activePlayerText + ", du stehst im Schach \nSchütze deinen Koenig!")
+                                    toast(activePlayerText + ", du stehst im Schach")
                                     
                                 if stalemate:
                                     pygame.mixer.music.load(Skin.pattSound)
                                     pygame.mixer.music.play(0, 0.0)
                                     inputAllowed = False  # Weiteren Input nach Spielende verhindern
                                     pygame.display.set_caption("SPIELENDE   |   Unentschieden")  # Titel am Spielende aktualisieren
-                                    informationDialog("Patt   |   Niemand gewinnt das Spiel", "Unentschieden!")
+                                    toast("Unentschieden!")
                                     
                                 selectedField = []
                                 break
@@ -1045,20 +1065,8 @@ def startGame(bot=False, online=False):
 
     repaint()  # Erstes Zeichnen des Spielfeldes
 
-    if bot:
-        while showPygameWindow:
-            if activePlayer == "white":
-                for event in pygame.event.get():
-                    if event.type == pygame.MOUSEBUTTONDOWN:
-                        x, y = event.pos
-                        figureSelect(x, y)
-                    if event.type == pygame.QUIT:
-                        showPygameWindow = False
-            else:
-                BC.getMove()
-
-    else:
-        while showPygameWindow:
+    while showPygameWindow:
+        if activePlayer == "white" or not bot:
             for event in pygame.event.get():
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     x, y = event.pos
@@ -1072,5 +1080,7 @@ def startGame(bot=False, online=False):
                     else:
                         gameExit = True
                         clientSocket.send("Mitspieler left game".encode())
+        else:
+            BC.getMove()
 
     pygame.quit()
