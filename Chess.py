@@ -1,5 +1,6 @@
 import Values
 import Skinpackets as Skin
+import botChess as BC
 import pygame
 import sys
 import time
@@ -8,8 +9,6 @@ import socket
 import pickle
 import tkinter
 from tkinter import ttk
-
-import botChess
 
 if __name__ == "__main__":
     sys.exit("Starte Gamemode.py, um das Spiel zu starten")
@@ -53,6 +52,7 @@ selectedField = []
 rochadeFigurePlace = []
 lastPossibleFields = []
 possibleHitFields = []
+moveList = {}
 schlagenEnPassant = [0, 0, 0]  # [move, sourceField, MoveToField] (move: Zug in dem der Bauer geschlagen werden könnte)
 sEPHit = []
 rochadeAllowed = True
@@ -72,7 +72,7 @@ showPygameWindow = True
 gameExit = False
 
 
-def repaint():  # Neu zeichen des Schachfeldes nach einer Bewegung --->>> Einfachste Möglichkeit Figur texturen wieder vom Feld zu entfernen
+def repaint():  # Funktion zum Zeichnen des Spielfeldes
     letters = ["8", "7", "6", "5", "4", "3", "2", "1", "a", "b", "c", "d", "e", "f", "g", "h"]
     if not onlineMode:
         if activePlayer == "black":
@@ -81,10 +81,10 @@ def repaint():  # Neu zeichen des Schachfeldes nach einer Bewegung --->>> Einfac
         if playerEnemy == "white":
             letters = ["1", "2", "3", "4", "5", "6", "7", "8", "h", "g", "f", "e", "d", "c", "b", "a"]
     letter = ""
-    pygameWindow.fill((250, 250, 250))  # Komplettes Fenster neu färben, da sonst Grafikfehler entstehen
+    pygameWindow.fill((250, 250, 250))  # Komplettes Fenster weiß färben
 
-    for i in range(0, 901, 100):  # Spaltenstriche, damit das kolorieren der Felder korrekt funktioniert
-        for j in range(0, 901, 100):  # Zeilenstriche, damit das kolorieren der Felder korrekt funktioniert
+    for i in range(0, 901, 100):  # Spaltenstriche
+        for j in range(0, 901, 100):  # Zeilenstriche
             if (i + j) % 200 == 0 or (i == 0 or i == 900) or (j == 0 or j == 900):
                 color = white
             else:
@@ -93,28 +93,37 @@ def repaint():  # Neu zeichen des Schachfeldes nach einer Bewegung --->>> Einfac
             if (i == 0 or i == 900) or (j == 0 or j == 900):
                 if (i != 0 or j != 0) and (i != 900 and j != 900):
                     if i == 0:
-                        letter = letters[j // 100 - 1]
+                        letter = letters[j // 100 - 1]  # Wenn das Schachfeld gedreht wird, müssen sich auch die Feldbezeichnungen mit drehen
                     elif j == 0:
                         letter = letters[i // 100 - 1 + 8]
                     font = pygame.font.Font("freesansbold.ttf", 25)
                     text = font.render(letter, True, black, white)
                     textRect = text.get_rect()
-                    textRect.center = ((i + 50) * mScreenW, (j + 50) * mScreenH)
+                    textRect.center = ((i + 50) * mScreenW, (j + 50) * mScreenH)  # Position des Textes
                     pygameWindow.blit(text, textRect)
+
+    textCount = 0
+    for move in range(moves - 4, moves + 1):  # Anzeigen der letzten 5 Züge am Rand
+        try:
+            font = pygame.font.Font(None, 25)
+            text = font.render(moveList[move], True, black, white)
+            textRect = text.get_rect()
+            textRect.center = (950 * mScreenW, 400 + (textCount * 25))  # Position des Textes
+            pygameWindow.blit(text, textRect)
+            textCount += 1
+        except KeyError as ke:
+            pass
 
     figureRepaint()
 
-    pygame.display.update()
 
-
-def figureRepaint():
-    for largeTupel in chessField:  # Für jedes Schachfeld die Mittelpunktkoordinaten, die Feldfarbe und die sích auf dem Feld befindliche Figur entnehmen und im Folgendem aufs Spielfeld zeichnen
+def figureRepaint():  # Funktion zum Zeichnen der Figuren
+    for largeTupel in chessField:
         centerX = largeTupel[6]
         centerY = largeTupel[7]
         figureTexture = largeTupel[3]
 
         if figureTexture != "":
-
             image = pygame.image.load(figureTexture)
             image_rect = image.get_rect()
 
@@ -134,13 +143,13 @@ def figureRepaint():
     pygame.display.update()
        
 
-def toast(message, duration=0, color=red):
+def toast(message, duration=0, color=red):  # Funktion zum Anzeigen von "Toast-Nachrichten"
     font = pygame.font.Font(None, 50)
     text = font.render(message, True, color)
 
     toastWidth = text.get_width()
     toastHeight = text.get_height()
-    toastRect = pygame.Rect(350 - toastWidth // 4, 350 - toastHeight // 4, toastWidth, toastHeight)
+    toastRect = pygame.Rect(350 - toastWidth // 4, 350 - toastHeight // 4, toastWidth, toastHeight)  # Toast-Position
 
     textRect = text.get_rect(center=toastRect.center)
     pygameWindow.blit(text, textRect)
@@ -151,7 +160,7 @@ def toast(message, duration=0, color=red):
         repaint()
 
 
-def startClient():  # Funktion zum Starten des Clients / verbinden mit dem Server
+def startClient():  # Funktion zum Starten des Clients / Verbinden mit dem Server
     global clientSocket
     global playerEnemy
     global playerEnemyText
@@ -194,7 +203,7 @@ def startClient():  # Funktion zum Starten des Clients / verbinden mit dem Serve
             informationDialog("ERROR", "Fehler: {}".format(e))
 
 
-def receiveMessages(cSocket):  # Funktion zum Empfangen von Zügen, sowie dem Spielende
+def receiveMessages(cSocket):  # Funktion zum Empfangen von Anweisungen
     global rochadeAllowed
     global inputAllowed
     global showPygameWindow
@@ -251,7 +260,6 @@ def receiveMessages(cSocket):  # Funktion zum Empfangen von Zügen, sowie dem Sp
             figureMove(sField, mField)  # Erhaltene Bewegung umsetzen
             decolor()  # Entfärben aller Felder sowie leeren der dazugehörigen Listen
             playerChange()
-            repaint()
             if activePlayer != playerEnemy:
                 check = checkCheck()  # Überprüfen, ob der König des aktuellen Spielers im Schach steht
                 if check:  # Aufrufen der Schachmatt-funktion nur, wenn ein König im Schach steht
@@ -286,7 +294,7 @@ def receiveMessages(cSocket):  # Funktion zum Empfangen von Zügen, sowie dem Sp
         informationDialog("ERROR", "Fehler beim Erhalten der Nachrichten: {}".format(e))
 
 
-def informationDialog(title, text, inputStr="", returnInputAsBool=False, autoDestroy=False):
+def informationDialog(title, text, inputStr="", returnInputAsBool=False, autoDestroy=False):  # Funktion zum Anzeigen eines Dialogfensters, mit welchem interagiert werden muss!
     global returnValue
 
     root = tkinter.Tk()
@@ -513,6 +521,7 @@ def figureMove(sourceIndex, moveToIndex, automatic=False, illegalMoveTest=False)
     global moves
     global rochadeMoved
     global rochadeFigurePlace
+    global moveList
 
     prefix = ""
     action = "-"
@@ -536,6 +545,7 @@ def figureMove(sourceIndex, moveToIndex, automatic=False, illegalMoveTest=False)
     
     if not automatic and not illegalMoveTest:  # Die folgenden 3 Methoden dürfen nur bei einem Zug und nicht bei einer Zugüberprüfung des Computers aufgerufen werden
 
+        # Zusammensetzen der Zug-Notation
         if sFigure.endswith("rook"):
             prefix = "T"
         elif sFigure.endswith("knight"):
@@ -570,6 +580,7 @@ def figureMove(sourceIndex, moveToIndex, automatic=False, illegalMoveTest=False)
                 pygame.mixer.music.play(0, 0.0)
 
                 enPas = "e.p."
+                action = "x"
 
                 skipSound = True
 
@@ -725,22 +736,21 @@ def figureMove(sourceIndex, moveToIndex, automatic=False, illegalMoveTest=False)
         checkTest = checkCheck()
         if checkTest:
             addition = "+"
-            checkMateTest = checkCheckMate()  # TODO Funktioniert aus irgendeinem Grund nicht korrekt (Nur für den Hashtag in der Chess-Notation)
+            checkMateTest = checkCheckMate()
             if checkMateTest:
                 addition = "#"
         if not rochade:
             notation = prefix + sFieldKey + action + mFieldKey + addition + promote + enPas
         else:
             notation = rochadeNotation
-        print(notation)
 
         playerChange()
 
-        moves += 1  
+        moves += 1
+        moveList[moves] = str(moves) + ": " + notation
         
         if not onlineMode:
             playerChange()  # Spielerwechsel mit Spieler text, enemy und Zug counter
-            repaint()  # Repainten des Schachfeldes, da sich die Figuren Grafisch bisher noch nicht bewegt haben
     
     if automatic:
         return lastChessField, lastRochadeMoved  # Beim Automatischen durchlaufen die Ursprungsfelder zurückgeben, damit diese nach der automatischen Figur bewegung sich nicht ändern
@@ -1030,7 +1040,6 @@ def figureSelect(posX, posY):  # Funktion die auf Aufruf des obigen Maus-callbac
 
 
 def startGame(bot=False, online=False):
-    import botChess as BC
     global pygameWindow
     global showPygameWindow
     global gameStart
@@ -1039,7 +1048,6 @@ def startGame(bot=False, online=False):
     global chessField
     
     onlineMode = online
-    
     gameStart = time.time()  # Zeit des Spielstarts speichern
     
     if not onlineMode:
@@ -1054,7 +1062,7 @@ def startGame(bot=False, online=False):
     resetChessField()
     pygame.init()
 
-    pygameWindow = pygame.display.set_mode((1000 * mScreenW, 1000 * mScreenH))  # Feste Fenstergröße, in die das Schachfeld perfekt hinein passt
+    pygameWindow = pygame.display.set_mode((1000 * mScreenW, 1000 * mScreenH))
     icon = pygame.image.load(Skin.icon)
     pygame.display.set_icon(icon)
 
@@ -1065,15 +1073,15 @@ def startGame(bot=False, online=False):
 
     repaint()  # Erstes Zeichnen des Spielfeldes
 
-    while showPygameWindow:
+    while showPygameWindow:  # Spiel-loop findet hier statt
         if activePlayer == "white" or not bot:
-            for event in pygame.event.get():
+            for event in pygame.event.get():  # Event-Abfrage
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     x, y = event.pos
                     if activePlayer == "black" or playerEnemy == "white":
                         x = -x + screenW
                         y = -y + screenH
-                    figureSelect(x, y)
+                    figureSelect(x, y)  # Aufrufen der select-Funktion mit den von dem Event gegebenen Positionswerten
                 if event.type == pygame.QUIT:
                     if not onlineMode:
                         showPygameWindow = False
@@ -1082,5 +1090,4 @@ def startGame(bot=False, online=False):
                         clientSocket.send("Mitspieler left game".encode())
         else:
             BC.getMove()
-
     pygame.quit()
