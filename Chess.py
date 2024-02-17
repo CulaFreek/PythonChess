@@ -1105,7 +1105,7 @@ def startGame(bot=False, online=False):
                             turnChessField = True
                         else:
                             turnChessField = False
-                    repaint()
+                        repaint()
                     if (activePlayer == "black" and turnChessField) or playerEnemy == "white":
                         x = -x + screenW
                         y = -y + screenH
