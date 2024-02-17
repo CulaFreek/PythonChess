@@ -125,22 +125,13 @@ def getMove():
         if figure.startswith("black"):
             Chess.selectedField.append((centerX, centerY, figure, fieldNumber, column, row))
             Chess.selectedField.append(index)
-            #print(figure)
-            if figure.endswith("pawn"):
-                print("p", Chess.possiblePawnMoves())
-                moves.append(Chess.possiblePawnMoves())
-                moves.append(("P", "p"))
-            elif figure.endswith("knight"):
-                print("k", Chess.possibleKnightMoves())
-                moves.append(Chess.possibleKnightMoves())
-            elif figure.endswith("bishop"):
-                moves.append(Chess.possibleBishopMoves())
-            elif figure.endswith("rook"):
-                moves.append(Chess.possibleRookMoves())
-            elif figure.endswith("queen"):
-                moves.append(Chess.possibleQueenMoves())
-            elif figure.endswith("king"):
-                moves.append(Chess.possibleKingMoves())
+            possibleBotFields, possibleBotHitFields = Chess.checkFigureType(figure)
+            for possibleField in possibleBotFields:
+                target = 0
+                for largeTuple in chessField:
+                    if possibleField[0] == largeTuple[6] and possibleField[1] == largeTuple[7]:
+                        lSelectedField = [(largeTuple[6], largeTuple[7], largeTuple[2], largeTuple[1], largeTuple[9], largeTuple[10]), index]
+                        lastChessField, lastRochadeMoved = Chess.figureMove(lSelectedField[1], target, True)
 
         index += 1
     #print(moves)
@@ -150,7 +141,7 @@ def getMove():
     #print(move)
     #return move
         
-#minimax algorithm with alpha beta pruning
+#minimax algorithm with alpha beta pruning (soon)
 
 
 def maxi(depth):
