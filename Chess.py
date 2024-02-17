@@ -23,7 +23,8 @@ black = (0, 0, 0)
 white = (250, 250, 250)
 gray = (198, 198, 198)
 red = (250, 0, 0)
-darkgray = (128, 128, 128)
+darkGray = (128, 128, 128)
+green = (0, 250, 0)
 
 chessField = []
 
@@ -71,44 +72,50 @@ moves = 0
 returnValue = None
 showPygameWindow = True
 gameExit = False
-drehen = False
+turnChessField = False
+
 
 def repaint():  # Funktion zum Zeichnen des Spielfeldes
     letters = ["8", "7", "6", "5", "4", "3", "2", "1", "a", "b", "c", "d", "e", "f", "g", "h"]
     if not onlineMode:
-        if drehen == True:
-            if activePlayer == "black":
-                letters = ["1", "2", "3", "4", "5", "6", "7", "8", "h", "g", "f", "e", "d", "c", "b", "a"]
-        else:
-            if playerEnemy == "white":
-                letters = ["1", "2", "3", "4", "5", "6", "7", "8", "h", "g", "f", "e", "d", "c", "b", "a"]
-        letter = "drehen"
+        if activePlayer == "black" and turnChessField:
+            letters = ["1", "2", "3", "4", "5", "6", "7", "8", "h", "g", "f", "e", "d", "c", "b", "a"]
+    else:
+        if playerEnemy == "white":
+            letters = ["1", "2", "3", "4", "5", "6", "7", "8", "h", "g", "f", "e", "d", "c", "b", "a"]
+    letter = ""
     pygameWindow.fill((250, 250, 250))  # Komplettes Fenster weiß färben
 
     for i in range(0, 901, 100):  # Spaltenstriche
         for j in range(0, 901, 100):  # Zeilenstriche
-            if (i + j) % 200 == 0 or (i == 0 or i == 900) or (j == 0 or j == 900):
+            if (i + j) % 200 == 0 and not ((i == 0 or i == 900) or (j == 0 or j == 900)):
                 color = white
+            elif (i == 0 or i == 900) or (j == 0 or j == 900):
+                color = darkGray
             else:
                 color = gray
-            if (i == 0 or i == 900) or (j == 0 or j == 900):
-                color = darkgray
+            if i == 0 and j == 0 and not onlineMode:
+                if turnChessField:
+                    color = green
+                else:
+                    color = red
             pygame.draw.rect(pygameWindow, color, (i * mScreenW, j * mScreenH, 100 * mScreenW, 100 * mScreenH))
-            if (i == 0) and (j == 0):
-                letter[0]
-                font = pygame.font.Font("freesansbold.ttf", 25)
-                text = font.render(letter, True, black, darkgray)
-                textRect = text.get_rect()
-                textRect.center = ((i + 50) * mScreenW, (j + 50) * mScreenH)  # Position des Textes
-                pygameWindow.blit(text, textRect)
+
             if (i == 0 or i == 900) or (j == 0 or j == 900):
-                if (i != 0 or j != 0) and (i != 900 and j != 900):
-                    if i == 0:
+                if i != 900 and j != 900:
+                    textBackground = darkGray
+                    if i == 0 and j == 0 and not onlineMode:
+                        letter = "Drehen"
+                        if turnChessField:
+                            textBackground = green
+                        else:
+                            textBackground = red
+                    elif i == 0:
                         letter = letters[j // 100 - 1]  # Wenn das Schachfeld gedreht wird, müssen sich auch die Feldbezeichnungen mit drehen
                     elif j == 0:
                         letter = letters[i // 100 - 1 + 8]
                     font = pygame.font.Font("freesansbold.ttf", 25)
-                    text = font.render(letter, True, black, darkgray)
+                    text = font.render(letter, True, black, textBackground)
                     textRect = text.get_rect()
                     textRect.center = ((i + 50) * mScreenW, (j + 50) * mScreenH)  # Position des Textes
                     pygameWindow.blit(text, textRect)
@@ -117,7 +124,7 @@ def repaint():  # Funktion zum Zeichnen des Spielfeldes
     for move in range(moves - 4, moves + 1):  # Anzeigen der letzten 5 Züge am Rand
         try:
             font = pygame.font.Font(None, 25)
-            text = font.render(moveList[move], True, black, darkgray)
+            text = font.render(moveList[move], True, black, darkGray)
             textRect = text.get_rect()
             textRect.center = (950 * mScreenW, 400 + (textCount * 25))  # Position des Textes
             pygameWindow.blit(text, textRect)
@@ -142,15 +149,13 @@ def figureRepaint():  # Funktion zum Zeichnen der Figuren
             b = (centerY - image_rect.height // 2)
 
             if not onlineMode:
-                if drehen == True:
-                    if activePlayer == "black":
-                        a = -a + screenW - image_rect.width
-                        b = -b + screenH - image_rect.height
-                    else:
-                        if playerEnemy == "white":
-                            a = -a + screenW - image_rect.width
-                            b = -b + screenH - image_rect.height
-
+                if activePlayer == "black" and turnChessField:
+                    a = -a + screenW - image_rect.width
+                    b = -b + screenH - image_rect.height
+            else:
+                if playerEnemy == "white":
+                    a = -a + screenW - image_rect.width
+                    b = -b + screenH - image_rect.height
 
             pygameWindow.blit(image, (a, b))
     pygame.display.update()
@@ -961,22 +966,19 @@ def figureSelect(posX, posY):  # Funktion die auf Aufruf des obigen Maus-callbac
                     selectedField.append((centerX, centerY, figure, fieldNumber, column, row))  # Nach leeren und entfärben wird hier die neu ausgewählte Figur aufgenommen
                     selectedField.append(index)  # Speichern des Indexes des ausgewählten Feldes | Wichtig für die move Funktion
                     if not onlineMode:
-                        if drehen == True:
-                            if activePlayer == "black":
-                                fX = -centerX + screenW
-                                fY = -centerY + screenH
-                            else:
-                                fX = centerX
-                                fY = centerY
+                        if activePlayer == "black" and turnChessField:
+                            fX = -centerX + screenW
+                            fY = -centerY + screenH
                         else:
-                            if playerEnemy == "white":
-                                fX = -centerX + screenW
-                                fY = -centerY + screenH
-                            else:
-                                fX = centerX
-                                fY = centerY
-
-
+                            fX = centerX
+                            fY = centerY
+                    else:
+                        if playerEnemy == "white":
+                            fX = -centerX + screenW
+                            fY = -centerY + screenH
+                        else:
+                            fX = centerX
+                            fY = centerY
 
                     pygame.draw.rect(pygameWindow, (173, 216, 230), (fX - 50 * mScreenW, fY - 50 * mScreenH, 100 * mScreenW, 100 * mScreenH))
                     figureRepaint()
@@ -1015,14 +1017,13 @@ def figureSelect(posX, posY):  # Funktion die auf Aufruf des obigen Maus-callbac
                     for f in lastPossibleFields:  # Färben der möglichen Züge
                         fX, fY, fNumber = f
                         if not onlineMode:
-                            if drehen == True:
-                                if activePlayer == "black":
-                                    fX = -fX + screenW
-                                    fY = -fY + screenH
-                            else:
-                                if playerEnemy == "white":
-                                    fX = -fX + screenW
-                                    fY = -fY + screenH
+                            if activePlayer == "black" and turnChessField:
+                                fX = -fX + screenW
+                                fY = -fY + screenH
+                        else:
+                            if playerEnemy == "white":
+                                fX = -fX + screenW
+                                fY = -fY + screenH
 
                         pygame.draw.rect(pygameWindow, (63, 255, 0), (fX - 50 * mScreenW, fY - 50 * mScreenH, 100 * mScreenW, 100 * mScreenH))
 
@@ -1031,28 +1032,26 @@ def figureSelect(posX, posY):  # Funktion die auf Aufruf des obigen Maus-callbac
                             if type(t) is tuple:
                                 tX, tY, = t
                                 if not onlineMode:
-                                    if drehen == True:
-                                        if activePlayer == "black":
-                                            tX = -tX + screenW
-                                            tY = -tY + screenH
-                                        else:
-                                            if playerEnemy == "white":
-                                                tX = -tX + screenW
-                                                tY = -tY + screenH
+                                    if activePlayer == "black" and turnChessField:
+                                        tX = -tX + screenW
+                                        tY = -tY + screenH
+                                else:
+                                    if playerEnemy == "white":
+                                        tX = -tX + screenW
+                                        tY = -tY + screenH
 
                                 pygame.draw.rect(pygameWindow, (192, 0, 255), (tX - 50 * mScreenW, tY - 50 * mScreenH, 100 * mScreenW, 100 * mScreenH))
 
                     for f in possibleHitFields:
                         fX, fY, fNumber = f
                         if not onlineMode:
-                            if drehen == True :
-                                if activePlayer == "black":
-                                    fX = -fX + screenW
-                                    fY = -fY + screenH
-                                else:
-                                    if playerEnemy == "white":
-                                        fX = -fX + screenW
-                                        fY = -fY + screenH
+                            if activePlayer == "black" and turnChessField:
+                                fX = -fX + screenW
+                                fY = -fY + screenH
+                        else:
+                            if playerEnemy == "white":
+                                fX = -fX + screenW
+                                fY = -fY + screenH
 
                         pygame.draw.rect(pygameWindow, (250, 0, 0), (fX - 50 * mScreenW, fY - 50 * mScreenH, 100 * mScreenW, 100 * mScreenH))
 
@@ -1068,7 +1067,7 @@ def startGame(bot=False, online=False):
     global gameExit
     global onlineMode
     global chessField
-    global drehen
+    global turnChessField
     
     onlineMode = online
     gameStart = time.time()  # Zeit des Spielstarts speichern
@@ -1102,14 +1101,14 @@ def startGame(bot=False, online=False):
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     x, y = event.pos
                     if event.pos <= (100, 100):
-                        if drehen == False:
-                            drehen = True
+                        if not turnChessField:
+                            turnChessField = True
                         else:
-                            drehen = False
-                    if drehen == True:
-                        if activePlayer == "black" or playerEnemy == "white":
-                            x = -x + screenW
-                            y = -y + screenH
+                            turnChessField = False
+                    repaint()
+                    if (activePlayer == "black" and turnChessField) or playerEnemy == "white":
+                        x = -x + screenW
+                        y = -y + screenH
                     figureSelect(x, y)  # Aufrufen der select-Funktion mit den von dem Event gegebenen Positionswerten
                 if event.type == pygame.QUIT:
                     if not onlineMode:
