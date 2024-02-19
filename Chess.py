@@ -185,8 +185,8 @@ def startClient():  # Funktion zum Starten des Clients / Verbinden mit dem Serve
     global yourColor
     global onlineConnection
 
-    while time.time() - gameStart <= 10 and not onlineConnection:  # Falls innerhalb von 10 Sekunden keine Verbindung hergestellt werden kann wird das Programm mit einem SystemExit beendet
-        try:  # Falls keine Verbindung mit dem Server zustande kommt: Fehler abfangen, Programm durch Sys-exit beenden mit entsprechender Nachricht
+    while time.time() - gameStart <= 10 and not onlineConnection:
+        try:
             clientSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             clientSocket.connect(('jythonchess.de', 8888))  # Verbinden mit dem Server, falls möglich
             clientSocket.send("spielen".encode())
@@ -195,7 +195,7 @@ def startClient():  # Funktion zum Starten des Clients / Verbinden mit dem Serve
                 onlineConnection = True
                 
             if time.time() - gameStart <= 3 and not onlineConnection:
-                sys.exit("Es konnte keine Verbindung zum Server hergestellt werden")  # Mitteilung, dass kein Verbindungsaufbau möglich ist
+                sys.exit("Es konnte keine Verbindung zum Server hergestellt werden")
             else:
                 gameCode = informationDialog("Gib deinen Spielcode ein", "Willkommen! \nBitte gib einen Game-Code ein oder erstelle einen neuen \n" + openGames.decode(), "Gib einen Game-Code ein: ")
                 if gameCode is None:
@@ -228,11 +228,11 @@ def receiveMessages(cSocket):  # Funktion zum Empfangen von Anweisungen
     global gameExit
 
     try:
-        while True:  # Muss durchgängig laufen, da zu jedem Zeitpunkt Bewegungen empfangen werden müssen
+        while True:  # Muss durchgängig laufen, da zu jedem Zeitpunkt Anweisungen empfangen werden müssen
             checkMate = False
             stalemate = False
-            data = cSocket.recv(1024)  # Empfangen der Nachricht
-            if not data:  # Falls kein Zug gemacht wurde, ist der Inhalt der Nachricht 'None'. Nur nicht 'None'-Nachrichten weiter verarbeiten, sonst Fehlermeldung
+            data = cSocket.recv(1024)
+            if not data:
                 break
 
             if data == b"christmas":
@@ -249,7 +249,7 @@ def receiveMessages(cSocket):  # Funktion zum Empfangen von Anweisungen
                     Skin.updateBlack("default")
                 continue
             
-            if data == b"Mitspieler left game":  # Falls der Mitspieler das Spiel verlässt
+            if data == b"Mitspieler left game":
                 inputAllowed = False
                 if gameExit:
                     informationDialog("Spiel verlassen!", "Du hast das Spiel verlassen")
@@ -259,14 +259,14 @@ def receiveMessages(cSocket):  # Funktion zum Empfangen von Anweisungen
                 cSocket.close()
                 break
 
-            if data == b"You Won":  # Nachricht, die Erhalten wird, wenn der Gegner verliert
+            if data == b"You Won":
                 pygame.mixer.music.load(Skin.winSound)
                 pygame.mixer.music.play(0, 0.0)
                 informationDialog("Schachmatt   |   " + yourColor + " gewinnt das Spiel", yourColor + " hat das Spiel gewonnen!")
                 inputAllowed = False
                 break
             
-            if data == b"Draw":  # Nachricht, die Erhalten wird, wenn es zu einem Unentschieden kommt
+            if data == b"Draw":
                 pygame.mixer.music.load(Skin.pattSound)
                 pygame.mixer.music.play(0, 0.0)
                 informationDialog("Patt   |   Niemand gewinnt das Spiel", "Unentschieden")
@@ -280,14 +280,14 @@ def receiveMessages(cSocket):  # Funktion zum Empfangen von Anweisungen
             playerChange()
             if activePlayer != playerEnemy:
                 check = checkCheck()  # Überprüfen, ob der König des aktuellen Spielers im Schach steht
-                if check:  # Aufrufen der Schachmatt-funktion nur, wenn ein König im Schach steht
+                if check:  # Aufrufen der Schachmatt-funktion, wenn ein König im Schach steht
                     rochadeAllowed = False
                     checkMate = checkCheckMate()
                 if not check:
                     rochadeAllowed = True
                     stalemate = checkStalemate()
                 if checkMate:
-                    playerChange()  # Wechseln des Gegners, da für seine Figuren die möglichen Züge ermittelt werden sollen, und seine Figuren die Figuren des aktiven Spielers schlagen könnten
+                    playerChange()
                     inputAllowed = False  # Weiteren Input nach Spielende verhindern
                     cSocket.send("You Won".encode())
                     pygame.mixer.music.load(Skin.loseSound)
@@ -743,7 +743,6 @@ def figureMove(sourceIndex, moveToIndex, automatic=False, illegalMoveTest=False)
             
     if illegalMoveTest:
         check = checkCheck()  # Überprüfung auf einen illegalen Zug
-        kingGetter() 
         chessField = [] + lastChessField  # Feld mit der erstellten Kopie überschreiben
         rochadeMoved = [] + lastRochadeMoved  # Liste mit den bewegten Rochade-Figuren auf Stand vor dem illegalen Zug zurücksetzen
         return check
