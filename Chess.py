@@ -33,7 +33,7 @@ def resetChessField():
     global chessField
 
     # Schachfeld
-                    #   0           1          2           3          4       5       6        7          8          9     10
+    #                   0           1          2           3          4       5       6        7          8          9     10
     chessField = [  # fieldKey, fieldNumber, figure, figureTexture, leftX, yAbove, centerX, centerY, figureColor, column, row
         ("a8", 1, "black_1_rook", Skin.blackRook, 100 * mScreenW, 100 * mScreenH, 150 * mScreenW, 150 * mScreenH, "black", 1, 1), ("b8", 2, "black_knight", Skin.blackKnight, 200 * mScreenW, 100 * mScreenH, 250 * mScreenW, 150 * mScreenH, "black", 1, 2), ("c8", 3, "black_bishop", Skin.blackBishop, 300 * mScreenW, 100 * mScreenH, 350 * mScreenW, 150 * mScreenH, "black", 1, 3), ("d8", 4, "black_queen", Skin.blackQueen, 400 * mScreenW, 100 * mScreenH, 450 * mScreenW, 150 * mScreenH, "black", 1, 4), ("e8", 5, "black_king", Skin.blackKing, 500 * mScreenW, 100 * mScreenH, 550 * mScreenW, 150 * mScreenH, "black", 1, 5), ("f8", 6, "black_bishop", Skin.blackBishop, 600 * mScreenW, 100 * mScreenH, 650 * mScreenW, 150 * mScreenH, "black", 1, 6), ("g8", 7, "black_knight", Skin.blackKnight, 700 * mScreenW, 100 * mScreenH, 750 * mScreenW, 150 * mScreenH, "black", 1, 7), ("h8", 8, "black_2_rook", Skin.blackRook, 800 * mScreenW, 100 * mScreenH, 850 * mScreenW, 150 * mScreenH, "black", 1, 8),
         ("a7", 9, "black_pawn", Skin.blackPawn, 100 * mScreenW, 200 * mScreenH, 150 * mScreenW, 250 * mScreenH, "black", 2, 1), ("b7", 10, "black_pawn", Skin.blackPawn, 200 * mScreenW, 200 * mScreenH, 250 * mScreenW, 250 * mScreenH, "black", 2, 2), ("c7", 11, "black_pawn", Skin.blackPawn, 300 * mScreenW, 200 * mScreenH, 350 * mScreenW, 250 * mScreenH, "black", 2, 3), ("d7", 12, "black_pawn", Skin.blackPawn, 400 * mScreenW, 200 * mScreenH, 450 * mScreenW, 250 * mScreenH, "black", 2, 4), ("e7", 13, "black_pawn", Skin.blackPawn, 500 * mScreenW, 200 * mScreenH, 550 * mScreenW, 250 * mScreenH, "black", 2, 5), ("f7", 14, "black_pawn", Skin.blackPawn, 600 * mScreenW, 200 * mScreenH, 650 * mScreenW, 250 * mScreenH, "black", 2, 6), ("g7", 15, "black_pawn", Skin.blackPawn, 700 * mScreenW, 200 * mScreenH, 750 * mScreenW, 250 * mScreenH, "black", 2, 7), ("h7", 16, "black_pawn", Skin.blackPawn, 800 * mScreenW, 200 * mScreenH, 850 * mScreenW, 250 * mScreenH, "black", 2, 8),
@@ -73,6 +73,7 @@ returnValue = None
 showPygameWindow = True
 gameExit = False
 turnChessField = False
+youSender = False
 
 
 def repaint():  # Funktion zum Zeichnen des Spielfeldes
@@ -104,7 +105,9 @@ def repaint():  # Funktion zum Zeichnen des Spielfeldes
             if (i == 0 or i == 900) or (j == 0 or j == 900):
                 if i != 900 and j != 900:
                     textBackground = darkGray
-                    if i == 0 and j == 0 and not onlineMode:
+                    if i == 0 and j == 0:
+                        if onlineMode:
+                            continue
                         letter = "Drehen"
                         if turnChessField:
                             textBackground = green
@@ -162,6 +165,7 @@ def figureRepaint():  # Funktion zum Zeichnen der Figuren
        
 
 def toast(message, duration=0, color=red):  # Funktion zum Anzeigen von "Toast-Nachrichten"
+
     font = pygame.font.Font(None, 50)
     text = font.render(message, True, color)
 
@@ -226,6 +230,7 @@ def receiveMessages(cSocket):  # Funktion zum Empfangen von Anweisungen
     global inputAllowed
     global showPygameWindow
     global gameExit
+    global youSender
 
     try:
         while True:  # Muss durchgängig laufen, da zu jedem Zeitpunkt Anweisungen empfangen werden müssen
@@ -233,7 +238,7 @@ def receiveMessages(cSocket):  # Funktion zum Empfangen von Anweisungen
             stalemate = False
             data = cSocket.recv(1024)
             if not data:
-                break
+                continue
 
             if data == b"christmas":
                 if playerEnemy == "white":
@@ -255,23 +260,25 @@ def receiveMessages(cSocket):  # Funktion zum Empfangen von Anweisungen
                     informationDialog("Spiel verlassen!", "Du hast das Spiel verlassen")
                 else:
                     informationDialog("Dein Mitspieler hat das Spiel verlassen", "Dein Mitspieler hat das Spiel verlassen! \n Ein Reconnect ist nicht möglich, zum spielen Programm neustarten!")
-                showPygameWindow = False
                 cSocket.close()
+                showPygameWindow = False
                 break
 
             if data == b"You Won":
-                pygame.mixer.music.load(Skin.winSound)
-                pygame.mixer.music.play(0, 0.0)
-                informationDialog("Schachmatt   |   " + yourColor + " gewinnt das Spiel", yourColor + " hat das Spiel gewonnen!")
-                inputAllowed = False
-                break
+                if not youSender:
+                    pygame.mixer.music.load(Skin.winSound)
+                    pygame.mixer.music.play(0, 0.0)
+                    informationDialog("Schachmatt   |   " + yourColor + " gewinnt das Spiel", yourColor + " hat das Spiel gewonnen!")
+                    inputAllowed = False
+                continue
             
             if data == b"Draw":
-                pygame.mixer.music.load(Skin.pattSound)
-                pygame.mixer.music.play(0, 0.0)
-                informationDialog("Patt   |   Niemand gewinnt das Spiel", "Unentschieden")
-                inputAllowed = False
-                break
+                if not youSender:
+                    pygame.mixer.music.load(Skin.pattSound)
+                    pygame.mixer.music.play(0, 0.0)
+                    informationDialog("Patt   |   Niemand gewinnt das Spiel", "Unentschieden")
+                    inputAllowed = False
+                continue
 
             receivedTuple = pickle.loads(data)
             sField, mField = int(receivedTuple[0]), int(receivedTuple[1])
@@ -289,11 +296,12 @@ def receiveMessages(cSocket):  # Funktion zum Empfangen von Anweisungen
                 if checkMate:
                     playerChange()
                     inputAllowed = False  # Weiteren Input nach Spielende verhindern
+                    youSender = True
                     cSocket.send("You Won".encode())
                     pygame.mixer.music.load(Skin.loseSound)
                     pygame.mixer.music.play(0, 0.0)
                     informationDialog("Schachmatt   |   " + playerEnemyText + " gewinnt das Spiel", playerEnemyText + " hat das Spiel gewonnen!")
-                    break
+                    continue
                     
                 if not checkMate and check:
                     pygame.mixer.music.load(Skin.checkSound)
@@ -302,11 +310,12 @@ def receiveMessages(cSocket):  # Funktion zum Empfangen von Anweisungen
                     
                 if stalemate:
                     inputAllowed = False  # Weiteren Input nach Spielende verhindern
+                    youSender = True
                     cSocket.send("Draw".encode())
                     pygame.mixer.music.load(Skin.pattSound)
                     pygame.mixer.music.play(0, 0.0)
                     informationDialog("Patt   |   Niemand gewinnt das Spiel", "Unentschieden")
-                    break
+                    continue
 
     except Exception as e:
         informationDialog("ERROR", "Fehler beim Erhalten der Nachrichten: {}".format(e))
@@ -979,8 +988,7 @@ def figureSelect(posX, posY):  # Funktion die auf Aufruf des obigen Maus-callbac
                             fX = centerX
                             fY = centerY
 
-                    pygame.draw.rect(pygameWindow, (173, 216, 230), (fX - 50 * mScreenW, fY - 50 * mScreenH, 100 * mScreenW, 100 * mScreenH))
-                    figureRepaint()
+                    pygame.draw.rect(pygameWindow, (173, 216, 230), (fX - 50 * mScreenW, fY - 50 * mScreenH, 100 * mScreenW, 100 * mScreenH))  # Selected-Field Hellblau färben
 
                     lastPossibleFields, possibleHitFields = checkFigureType(figure)  # Funktionsaufrufe je nach ausgewählter Figur
                     newPossibleMoves = []
@@ -1053,8 +1061,7 @@ def figureSelect(posX, posY):  # Funktion die auf Aufruf des obigen Maus-callbac
                                 fY = -fY + screenH
 
                         pygame.draw.rect(pygameWindow, (250, 0, 0), (fX - 50 * mScreenW, fY - 50 * mScreenH, 100 * mScreenW, 100 * mScreenH))
-
-                    figureRepaint()
+                    figureRepaint()  # Neu zeichnen der Figuren, da sie durch das Färben der Felder übermalt wurden
 
             index += 1  # Nach einem Schleifendurchlauf wird der Index um 1 erhöht
 
